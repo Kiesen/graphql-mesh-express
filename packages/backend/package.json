@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node-dev ./src/index.ts",
     "build": "rimraf ./build && tsc",
-    "lint": "eslint --ext .ts --ext .tsx --ext .js --max-warnings=0 src"
+    "lint": "eslint --ext .ts --ext .js --max-warnings=0 src"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

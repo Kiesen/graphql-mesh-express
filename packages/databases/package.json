@@ -9,7 +9,8 @@
     "seed:run": "knex --knexfile src/knexfile.ts seed:run",
     "migrate:make": "knex --knexfile src/knexfile.ts migrate:make",
     "migrate:latest": "knex --knexfile src/knexfile.ts migrate:latest",
-    "migrate:rollback": "knex --knexfile src/knexfile.ts migrate:rollback"
+    "migrate:rollback": "knex --knexfile src/knexfile.ts migrate:rollback",
+    "lint": "eslint --ext .ts --ext .js --max-warnings=0 src"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
