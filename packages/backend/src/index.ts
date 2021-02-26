@@ -1,11 +1,11 @@
-import express from 'express';
+/* istanbul ignore file */
+import 'isomorphic-fetch';
+import * as http from 'http';
+import { app } from './app';
 
-const backend = express();
+const publicServer = http.createServer(app);
+publicServer.timeout = 30 * 60 * 1000; // increases default timeout to 30 minutes
 
-backend.get('/', (req, res) => {
-  return res.send({
-    version: PACKAGE_VERSION,
-  });
+publicServer.listen(4848, () => {
+  console.log('Server started on port 4848');
 });
-
-export backend;
