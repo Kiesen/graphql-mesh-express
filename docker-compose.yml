@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  gqle-mesh-database:
+    image: mysql:5.7.25
+    container_name: gqle-mesh-database
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=mysql_db_name
+      - MYSQL_USER=mysql_user
+      - MYSQL_PASSWORD=mysql_pw
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    volumes:
+      - /var/lib/mysql
+    ports:
+      - 3306:3306

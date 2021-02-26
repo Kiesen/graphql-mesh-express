@@ -1,0 +1,25 @@
+{
+  "name": "graphql-mesh-express",
+  "description": "The aim of the project is to give you an example how to integrate graphql-mesh into an exisiting express backend.",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run start:be",
+    "start:be": "cd packages/backend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kiesen/graphql-mesh-express"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
+    "@typescript-eslint/parser": "^4.15.2",
+    "eslint": "^7.20.0",
+    "husky": "^5.1.1",
+    "lerna": "^3.22.1",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
+    "typescript": "^4.2.2"
+  }
+}

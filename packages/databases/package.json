@@ -1,0 +1,24 @@
+{
+  "name": "db",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "initialize": "npm run migrate:latest && npm run seed:run",
+    "seed:make": "knex --knexfile src/knexfile.ts --env=development seed:make",
+    "seed:run": "knex --knexfile src/knexfile.ts seed:run",
+    "migrate:make": "knex --knexfile src/knexfile.ts migrate:make",
+    "migrate:latest": "knex --knexfile src/knexfile.ts migrate:latest",
+    "migrate:rollback": "knex --knexfile src/knexfile.ts migrate:rollback"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "faker": "^5.4.0",
+    "knex": "^0.21.18",
+    "mysql": "^2.18.1",
+    "ts-node": "^9.1.1"
+  },
+  "devDependencies": {
+    "@types/faker": "^5.1.7"
+  }
+}
