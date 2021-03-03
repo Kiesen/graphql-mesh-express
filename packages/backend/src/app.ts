@@ -41,6 +41,7 @@ app.get('/ping', (req, res) => {
 
 //       app.use(
 //         '/graphql',
+//         getUserRights,
 //         graphqlHTTP(async (req, res) => ({
 //           schema,
 //           context: await contextBuilder({
