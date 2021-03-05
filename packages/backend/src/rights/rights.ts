@@ -1,4 +1,4 @@
-import { MeshContext } from '@_types/context';
+import { MeshContext } from '@internalTypes/context';
 import { MutationConfig } from './config';
 
 /**

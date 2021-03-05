@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { ResponseWithRights } from '@_types/context';
+import { ResponseWithRights } from '@internalTypes/context';
 import { UserRight } from '@src/rights/config';
 
 /**

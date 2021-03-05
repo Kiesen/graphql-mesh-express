@@ -47,7 +47,7 @@
     "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
     "paths": {
       "@util/*": ["src/util/*"],
-      "@_types/*": ["src/_types/*"],
+      "@internalTypes/*": ["src/types/*"],
       "@src/*": ["src/*"],
       "@config/*": ["src/config/*"]
     },
