@@ -1,0 +1,12 @@
+{
+  "name": "fake-graphql",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "start": "graphql-faker -p 9002 --open ./types.graphql"
+  },
+  "devDependencies": {
+    "graphql-faker": "2.0.0-rc.23"
+  }
+}
