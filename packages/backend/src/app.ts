@@ -1,7 +1,7 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { getMeshConfig } from '@src/mesh/mesh';
-import { getUserRights } from './middleware/getUserRights';
+import { getUserRights } from '@src/middleware/getUserRights';
 // TODO:
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
 

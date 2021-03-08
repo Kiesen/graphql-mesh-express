@@ -1,7 +1,7 @@
 import { ResolversComposition } from '@graphql-tools/resolvers-composition';
 import { MeshContext } from '@internalTypes/context';
 import { GraphQLFieldResolver } from 'graphql';
-import { MutationConfig } from './config';
+import { MutationConfig } from '@src/rights/config';
 
 type ResolverComposer = ResolversComposition<
   GraphQLFieldResolver<any, MeshContext>
@@ -9,7 +9,7 @@ type ResolverComposer = ResolversComposition<
 
 /**
  * When you look into mesh.ts you see that we're using a ResolversCompositionTransform to
- * allow/deny mutations based on a user rights. This is configured via resolvers specifying
+ * allow/deny mutations based on user rights. This is configured via resolvers specifying
  * the name of a mutation (e.g. "Mutation.mutationPartner") or multiple mutations (like "Mutation.*")
  * and composers for these resolvers.
  *
