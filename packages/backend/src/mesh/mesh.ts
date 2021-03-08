@@ -10,12 +10,12 @@ import FilterTransform from '@graphql-mesh/transform-filter-schema';
 import CacheTransform from '@graphql-mesh/transform-cache';
 import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
 import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
-import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
+// import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
 import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
-import { buildMutationResolverComposers } from '@src/rights/rights';
-import { mutationConfig } from '@src/rights/config';
-import PrefixTransform from '@graphql-mesh/transform-prefix';
+// import { buildMutationResolverComposers } from '@src/rights/rights';
+// import { mutationConfig } from '@src/rights/config';
+// import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
 
 /**
@@ -23,14 +23,14 @@ import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
  * `logDB` mutation.
  */
 const mutationFieldsForSettingsChanges: readonly string[] = [
-  'updatePost',
+  'updateFirstName',
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
   'logDB',
 ];
 
-const allowedQueries: readonly string[] = ['post', 'user', 'photo'];
+const allowedQueries: readonly string[] = ['user'];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -51,34 +51,36 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           cache,
           name: 'GraphQLZero_dev',
           config: {
-            endpoint: Endpoints.GRAPHQL_ZERO_DEV,
+            endpoint: Endpoints.FAKE_GRAPHQL_DEV,
             customFetch,
           },
         }),
-        transforms: [
-          new PrefixTransform({
-            pubsub,
-            cache,
-            config: {
-              // value: Environment.Live + '_',
-              value: '_',
-              includeRootOperations: true,
-            },
-          }),
-        ],
+        // TODO:
+        // transforms: [
+        //   new PrefixTransform({
+        //     pubsub,
+        //     cache,
+        //     config: {
+        //       // TODO: Use environment
+        //       // value: Environment.Live + '_',
+        //       value: '_',
+        //       includeRootOperations: true,
+        //     },
+        //   }),
+        // ],
       },
-      {
-        name: 'GraphQLZero_prod',
-        handler: new GraphQLHandler({
-          pubsub,
-          cache,
-          name: 'GraphQLZero_prod',
-          config: {
-            endpoint: Endpoints.GRAPHQL_ZERO_PROD,
-            customFetch,
-          },
-        }),
-      },
+      // {
+      //   name: 'GraphQLZero_prod',
+      //   handler: new GraphQLHandler({
+      //     pubsub,
+      //     cache,
+      //     name: 'GraphQLZero_prod',
+      //     config: {
+      //       endpoint: Endpoints.FAKE_GRAPHQL_PROD,
+      //       customFetch,
+      //     },
+      //   }),
+      // },
       // {
       //   name: 'ChangelogDB',
       //   handler: new MySQLHandler({
@@ -100,12 +102,10 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         pubsub,
         config: [
           {
-            // TODO: Add some cache example
-            field: 'Query.TODO',
-            // TODO: Add cache key
-            cacheKey: 'TODO',
+            field: 'Query.user',
+            cacheKey: 'user',
             invalidate: {
-              ttl: 60 * 60, // invalidate every 60 minutes
+              ttl: 1 * 60, // invalidate every 1 minute
             },
           },
         ],
@@ -118,14 +118,15 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           `Query.{${allowedQueries.join(', ')}}`,
         ],
       }),
-      new ResolversCompositionTransform({
-        cache,
-        pubsub,
-        config: [
-          //  Resolvers which are placed below have higher precedence.
-          ...buildMutationResolverComposers(mutationConfig),
-        ],
-      }),
+      // TODO:
+      // new ResolversCompositionTransform({
+      //   cache,
+      //   pubsub,
+      //   config: [
+      //     //  Resolvers which are placed below have higher precedence.
+      //     // ...buildMutationResolverComposers(mutationConfig),
+      //   ],
+      // }),
     ],
   };
 };
