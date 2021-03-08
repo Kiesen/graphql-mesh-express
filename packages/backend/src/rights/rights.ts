@@ -19,7 +19,16 @@ export const buildMutationResolverComposers = (
   mutationConfig: MutationConfig
 ): {
   resolver: string;
-  composer: any;
+  composer: (
+    next: any
+  ) => (
+    root: any,
+    args: any,
+    context: {
+      req: MeshContext;
+    },
+    info: any
+  ) => any;
 }[] => [
   /*
    * First resolver in the list has lowest precedence.

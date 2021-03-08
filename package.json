@@ -5,11 +5,8 @@
   "private": false,
   "license": "MIT",
   "scripts": {
-    "start": "npm run start:be",
-    "start:be": "cd packages/backend && npm run dev",
-    "lint": "npm run lint:db && npm run lint:be",
-    "lint:db": "cd packages/databases && npm run lint",
-    "lint:be": "cd packages/backend && npm run lint",
+    "start": "lerna run start --stream",
+    "lint": "eslint --ext .ts --ext .tsx --max-warnings=0 packages",
     "pretty-quick": "pretty-quick",
     "bootstrap": "lerna bootstrap",
     "clean": "lerna clean",

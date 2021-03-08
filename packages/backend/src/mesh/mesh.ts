@@ -1,7 +1,7 @@
 import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
 import { GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
-import MySQLHandler from '@graphql-mesh/mysql';
+// import MySQLHandler from '@graphql-mesh/mysql';
 import { MeshPubSub } from '@graphql-mesh/types';
 import { PubSub } from 'graphql-subscriptions';
 import LRUCache from '@graphql-mesh/cache-inmemory-lru';
@@ -15,20 +15,22 @@ import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
 import { buildMutationResolverComposers } from '@src/rights/rights';
 import { mutationConfig } from '@src/rights/config';
+import PrefixTransform from '@graphql-mesh/transform-prefix';
+import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
 
 /**
  * These mutations are going to be used also in relation to our
  * `logDB` mutation.
  */
 const mutationFieldsForSettingsChanges: readonly string[] = [
-  // TODO: Add examples
+  'updatePost',
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
   'logDB',
 ];
 
-const allowedQueries: readonly string[] = [];
+const allowedQueries: readonly string[] = ['post', 'user', 'photo'];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -39,34 +41,56 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
   const pubsub = new PubSub() as MeshPubSub;
   return {
     pubsub,
-    cache, // TODO: We have to figure out at some point what to cache and how much.
-    merger: StitchingMerger, // This is the default strategy for merging multiple schemas together
+    cache,
+    merger: StitchingMerger,
     sources: [
-      // TODO: Find an online public gql service that can simulate our environments problem
       {
-        name: 'ServiceA',
+        name: 'GraphQLZero_dev',
         handler: new GraphQLHandler({
           pubsub,
           cache,
-          name: 'ServiceA',
+          name: 'GraphQLZero_dev',
           config: {
-            endpoint: Endpoints.SERVICE_A,
+            endpoint: Endpoints.GRAPHQL_ZERO_DEV,
+            customFetch,
+          },
+        }),
+        transforms: [
+          new PrefixTransform({
+            pubsub,
+            cache,
+            config: {
+              // value: Environment.Live + '_',
+              value: '_',
+              includeRootOperations: true,
+            },
+          }),
+        ],
+      },
+      {
+        name: 'GraphQLZero_prod',
+        handler: new GraphQLHandler({
+          pubsub,
+          cache,
+          name: 'GraphQLZero_prod',
+          config: {
+            endpoint: Endpoints.GRAPHQL_ZERO_PROD,
             customFetch,
           },
         }),
       },
-      {
-        name: 'ChangelogDB',
-        handler: new MySQLHandler({
-          cache,
-          pubsub,
-          name: 'ChangelogDB',
-          config: {
-            // TODO: Add a pool via mysql package
-            // pool: DatabasePools.CHANGELOG_DB.getPool(),
-          },
-        }),
-      },
+      // {
+      //   name: 'ChangelogDB',
+      //   handler: new MySQLHandler({
+      //     cache,
+      //     pubsub,
+      //     name: 'ChangelogDB',
+      //     config: {
+      //       // TODO: Add a pool via mysql package
+      //       // pool: DatabasePools.CHANGELOG_DB.getPool(),
+      //     },
+      //   }),
+      // },
     ],
     additionalResolvers,
     additionalTypeDefs: [additionalTypeDefs], // Needs to be wrapped in an array
