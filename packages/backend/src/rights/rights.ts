@@ -1,5 +1,11 @@
+import { ResolversComposition } from '@graphql-tools/resolvers-composition';
 import { MeshContext } from '@internalTypes/context';
+import { GraphQLFieldResolver } from 'graphql';
 import { MutationConfig } from './config';
+
+type ResolverComposer = ResolversComposition<
+  GraphQLFieldResolver<any, MeshContext>
+>;
 
 /**
  * When you look into mesh.ts you see that we're using a ResolversCompositionTransform to
@@ -19,16 +25,7 @@ export const buildMutationResolverComposers = (
   mutationConfig: MutationConfig
 ): {
   resolver: string;
-  composer: (
-    next: any
-  ) => (
-    root: any,
-    args: any,
-    context: {
-      req: MeshContext;
-    },
-    info: any
-  ) => any;
+  composer: ResolverComposer;
 }[] => [
   /*
    * First resolver in the list has lowest precedence.
@@ -52,7 +49,7 @@ export const buildMutationResolverComposers = (
 /**
  * A composer that is used to always disallow/block a mutation.
  */
-export const blockingComposer = (next: any) => (
+export const blockingComposer: ResolverComposer = (next: any) => (
   root: any,
   args: any,
   context: MeshContext,
@@ -66,7 +63,9 @@ export const blockingComposer = (next: any) => (
 /**
  * A composer that is used to always allow a mutation.
  */
-export const neverBlockingComposer = (next: any) => (
+export const neverBlockingComposer: ResolverComposer = (
+  next: any
+) => (
   root: any,
   args: any,
   context: MeshContext,
@@ -85,7 +84,7 @@ export const neverBlockingComposer = (next: any) => (
 export const buildComposer = (
   mutationConfig: MutationConfig,
   mutationName: string
-) => (next: any) => (
+): ResolverComposer => (next: any) => (
   root: any,
   args: any,
   context: MeshContext,
