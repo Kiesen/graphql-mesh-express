@@ -15,4 +15,6 @@ export const getUserRights = async (
   (res as ResponseWithRights).locals.rights = new Set(
     Object.values(UserRight)
   );
+
+  return next();
 };

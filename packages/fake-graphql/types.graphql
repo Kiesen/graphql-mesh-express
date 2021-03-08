@@ -1,0 +1,14 @@
+type User {
+  id: ID @fake(type: uuid)
+  firstName: String! @fake(type: firstName)
+  lastName: String! @fake(type: lastName)
+}
+
+type Query {
+  name: Int!
+  user: User!
+}
+
+type Mutation {
+  updateFirstName(firstName: String!): User
+}
