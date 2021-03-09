@@ -35,6 +35,7 @@
     "express-graphql": "^0.9.0",
     "graphql": "15.3.0",
     "graphql-tag": "^2.11.0",
+    "graphql-voyager": "^1.0.0-rc.31",
     "isomorphic-fetch": "3.0.0"
   }
 }

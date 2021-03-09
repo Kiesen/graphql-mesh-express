@@ -2,6 +2,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { getMeshConfig } from '@src/mesh/mesh';
 import { getUserRights } from '@src/middleware/getUserRights';
+import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 // TODO:
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
 
@@ -21,6 +22,8 @@ const persistChangeExtension: any = () => void 0;
 app.get('/ping', (req, res) => {
   return res.send('pong');
 });
+
+app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
 getMeshConfig()
   .then(
