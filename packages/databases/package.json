@@ -14,12 +14,12 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "faker": "^5.4.0",
     "knex": "^0.21.18",
-    "mysql": "^2.18.1",
-    "ts-node": "^9.1.1"
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
-    "@types/faker": "^5.1.7"
+    "@types/faker": "^5.1.7",
+    "faker": "^5.4.0",
+    "ts-node": "^9.1.1"
   }
 }

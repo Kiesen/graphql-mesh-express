@@ -1,19 +1,25 @@
 {
   "name": "graphql-mesh-express",
-  "description": "The aim of the project is to give you an example how to integrate graphql-mesh into an exisiting express backend.",
+  "description": "The aim of the project is to give you an example how to integrate graphql-mesh into an existing node.js express backend.",
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
   "scripts": {
-    "start": "npm run start:be",
-    "start:be": "cd packages/backend && npm run dev",
-    "lint": "npm run lint:db && npm run lint:be",
-    "lint:db": "cd packages/databases && npm run lint",
-    "lint:be": "cd packages/backend && npm run lint",
+    "start": "npm run be:start",
+    "lint": "npm run be:lint && npm run db:lint",
     "pretty-quick": "pretty-quick",
     "bootstrap": "lerna bootstrap",
     "clean": "lerna clean",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "be:start": "cd packages/backend && npm run dev",
+    "be:lint": "cd packages/backend && npm run lint",
+    "db:initialize": "cd packages/databases && npm run initialize",
+    "db:seed:make": "cd packages/databases && npm run seed:make",
+    "db:seed:run": "cd packages/databases && npm run seed:run",
+    "db:migrate:make": "cd packages/databases && npm run migrate:make",
+    "db:migrate:latest": "cd packages/databases && npm run migrate:latest",
+    "db:migrate:rollback": "cd packages/databases && npm run migrate:rollback",
+    "db:lint": "cd packages/databases && npm run lint"
   },
   "repository": {
     "type": "git",
