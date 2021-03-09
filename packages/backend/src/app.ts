@@ -6,12 +6,6 @@ import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 // TODO:
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
 
-// const NODE_ENV = process.env.NODE_ENV as
-//   | 'test'
-//   | 'development'
-//   | 'staging'
-//   | 'production';
-
 const app = express();
 
 // TODO: Add persist change extension
