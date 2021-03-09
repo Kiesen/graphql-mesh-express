@@ -1,3 +1,7 @@
+import { userRightsResolver } from './queryResolvers/userRights';
+import { additionalManagerInfoResolver } from './typeResolvers/additionalManagerInfo';
+import { managerResolver } from './typeResolvers/manager';
+
 /**
  *  If you would like to update types use
  * `// @ts-nocheck` on top of the file
@@ -11,9 +15,10 @@ const additionalResolvers = {
     // logDB: logDBResolver,
   },
   Query: {
-    // TODO: Extend with some examples
+    userRights: userRightsResolver,
   },
-  // TODO: Add some examples
+  Manager: managerResolver,
+  AdditionalManagerInfo: additionalManagerInfoResolver,
 };
 
 export { additionalResolvers };

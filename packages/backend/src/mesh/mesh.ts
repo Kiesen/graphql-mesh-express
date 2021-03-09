@@ -23,14 +23,14 @@ import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
  * `logDB` mutation.
  */
 const mutationFieldsForSettingsChanges: readonly string[] = [
-  'updateFirstName',
+  'updateManagerFirstName',
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
   'logDB',
 ];
 
-const allowedQueries: readonly string[] = ['user'];
+const allowedQueries: readonly string[] = ['manager', 'userRights'];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();

@@ -8,5 +8,5 @@ export enum UserRight {
 }
 
 export const mutationConfig: MutationConfig = {
-  updateFirstName: UserRight.GRAPHQL_FAKER_WRITE,
+  updateManagerFirstName: UserRight.GRAPHQL_FAKER_WRITE,
 };

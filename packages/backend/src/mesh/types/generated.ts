@@ -23,22 +23,25 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  user: User;
+  manager: Manager;
+  userRights: Array<Scalars['String']>;
 };
 
-export type User = {
-  __typename?: 'User';
+export type Manager = {
+  __typename?: 'Manager';
   id?: Maybe<Scalars['ID']>;
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  phoneNumber: Scalars['String'];
+  additionalInfo: AdditionalManagerInfo;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  updateFirstName?: Maybe<User>;
+  updateManagerFirstName?: Maybe<Manager>;
 };
 
-export type MutationUpdateFirstNameArgs = {
+export type MutationUpdateManagerFirstNameArgs = {
   firstName: Scalars['String'];
 };
 
@@ -222,6 +225,11 @@ export type Fake__Options = {
   precisionNumber?: Maybe<Scalars['Float']>;
 };
 
+export type AdditionalManagerInfo = {
+  __typename?: 'AdditionalManagerInfo';
+  address: Scalars['String'];
+};
+
 export enum Environment {
   Live = 'live',
   Dev = 'dev',
@@ -380,9 +388,9 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
-  User: ResolverTypeWrapper<User>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Manager: ResolverTypeWrapper<Manager>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   fake__Locale: Fake__Locale;
   fake__Types: Fake__Types;
@@ -394,15 +402,16 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   examples__JSON: ResolverTypeWrapper<Scalars['examples__JSON']>;
+  AdditionalManagerInfo: ResolverTypeWrapper<AdditionalManagerInfo>;
   Environment: Environment;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
-  User: User;
-  ID: Scalars['ID'];
   String: Scalars['String'];
+  Manager: Manager;
+  ID: Scalars['ID'];
   Mutation: {};
   fake__imageSize: Fake__ImageSize;
   Int: Scalars['Int'];
@@ -411,6 +420,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Float: Scalars['Float'];
   examples__JSON: Scalars['examples__JSON'];
+  AdditionalManagerInfo: AdditionalManagerInfo;
 };
 
 export type FakeDirectiveArgs = {
@@ -462,12 +472,21 @@ export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes['Query']
 > = {
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  manager?: Resolver<
+    ResolversTypes['Manager'],
+    ParentType,
+    ContextType
+  >;
+  userRights?: Resolver<
+    Array<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
 };
 
-export type UserResolvers<
+export type ManagerResolvers<
   ContextType = any,
-  ParentType = ResolversParentTypes['User']
+  ParentType = ResolversParentTypes['Manager']
 > = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   firstName?: Resolver<
@@ -480,6 +499,16 @@ export type UserResolvers<
     ParentType,
     ContextType
   >;
+  phoneNumber?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  additionalInfo?: Resolver<
+    ResolversTypes['AdditionalManagerInfo'],
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -487,11 +516,11 @@ export type MutationResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes['Mutation']
 > = {
-  updateFirstName?: Resolver<
-    Maybe<ResolversTypes['User']>,
+  updateManagerFirstName?: Resolver<
+    Maybe<ResolversTypes['Manager']>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateFirstNameArgs, 'firstName'>
+    RequireFields<MutationUpdateManagerFirstNameArgs, 'firstName'>
   >;
 };
 
@@ -503,11 +532,24 @@ export interface Examples__JsonScalarConfig
   name: 'examples__JSON';
 }
 
+export type AdditionalManagerInfoResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['AdditionalManagerInfo']
+> = {
+  address?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
+  Manager?: ManagerResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   examples__JSON?: GraphQLScalarType;
+  AdditionalManagerInfo?: AdditionalManagerInfoResolvers<ContextType>;
 };
 
 /**
