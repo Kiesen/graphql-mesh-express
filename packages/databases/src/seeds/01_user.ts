@@ -2,9 +2,8 @@ import * as Knex from 'knex';
 import faker from 'faker';
 
 import { USERS_TABLE, User } from '../config/users';
+import { CHANGES_TABLE } from '../config/changes';
 import '../env';
-
-const { TABLE_NAME } = USERS_TABLE;
 
 const createSeeds = (): User[] => {
   const numberOfSeeds = parseInt(process.env.USER_SEED_AMOUNT, 10);
@@ -25,6 +24,8 @@ const createSeeds = (): User[] => {
 export async function seed(knex: Knex): Promise<void> {
   const seeds = createSeeds();
 
-  await knex(TABLE_NAME).del();
-  await knex(TABLE_NAME).insert(seeds);
+  // First delete all relation user entries inside the changes table
+  await knex(CHANGES_TABLE.TABLE_NAME).del();
+  await knex(USERS_TABLE.TABLE_NAME).del();
+  await knex(USERS_TABLE.TABLE_NAME).insert(seeds);
 }
