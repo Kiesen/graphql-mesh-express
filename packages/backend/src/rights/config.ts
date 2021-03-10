@@ -3,11 +3,10 @@ export type MutationConfig = {
 };
 
 export enum UserRight {
-  // TODO: Might need to change name
-  SERVICE_A_READ = 'SERVICE_A_READ',
-  SERVICE_A_WRITE = 'SERVICE_A_WRITE',
+  GRAPHQL_FAKER_READ = 'GRAPHQL_FAKER_READ',
+  GRAPHQL_FAKER_WRITE = 'GRAPHQL_FAKER_WRITE',
 }
 
 export const mutationConfig: MutationConfig = {
-  updateServiceA: UserRight.SERVICE_A_READ,
+  updateManagerFirstName: UserRight.GRAPHQL_FAKER_WRITE,
 };

@@ -1,14 +1,14 @@
-type User {
+type Manager {
   id: ID @fake(type: uuid)
   firstName: String! @fake(type: firstName)
   lastName: String! @fake(type: lastName)
+  phoneNumber: String! @fake(type: phoneNumber)
 }
 
 type Query {
-  name: Int!
-  user: User!
+  manager: Manager!
 }
 
 type Mutation {
-  updateFirstName(firstName: String!): User
+  updateManagerFirstName(firstName: String!): Manager
 }
