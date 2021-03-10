@@ -39,10 +39,15 @@ export type Manager = {
 export type Mutation = {
   __typename?: 'Mutation';
   updateManagerFirstName?: Maybe<Manager>;
+  logDB?: Maybe<Changes>;
 };
 
 export type MutationUpdateManagerFirstNameArgs = {
   firstName: Scalars['String'];
+};
+
+export type MutationLogDbArgs = {
+  input: ChangesInput;
 };
 
 export enum Fake__Locale {
@@ -225,6 +230,44 @@ export type Fake__Options = {
   precisionNumber?: Maybe<Scalars['Float']>;
 };
 
+export type ChangesInput = {
+  comment: Scalars['String'];
+  advertiserId: Scalars['Int'];
+  fields: Array<ChangedFieldInput>;
+  environment: Environment;
+};
+
+export type Changes = {
+  __typename?: 'Changes';
+  comment: Scalars['String'];
+  advertiserId: Scalars['Int'];
+  fields: Array<ChangedField>;
+  environment: Environment;
+};
+
+export type ChangedFieldInput = {
+  fieldNamespace: Scalars['String'];
+  fieldId: Scalars['String'];
+  fieldName: Scalars['String'];
+  oldValueJson: Scalars['String'];
+  oldValueAsDisplayed: Scalars['String'];
+  newValueJson: Scalars['String'];
+  newValueAsDisplayed: Scalars['String'];
+  path: Scalars['String'];
+};
+
+export type ChangedField = {
+  __typename?: 'ChangedField';
+  fieldNamespace: Scalars['String'];
+  fieldId: Scalars['String'];
+  fieldName: Scalars['String'];
+  oldValueJson: Scalars['String'];
+  oldValueAsDisplayed: Scalars['String'];
+  newValueJson: Scalars['String'];
+  newValueAsDisplayed: Scalars['String'];
+  path: Scalars['String'];
+};
+
 export type AdditionalManagerInfo = {
   __typename?: 'AdditionalManagerInfo';
   address: Scalars['String'];
@@ -402,6 +445,10 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   examples__JSON: ResolverTypeWrapper<Scalars['examples__JSON']>;
+  ChangesInput: ChangesInput;
+  Changes: ResolverTypeWrapper<Changes>;
+  ChangedFieldInput: ChangedFieldInput;
+  ChangedField: ResolverTypeWrapper<ChangedField>;
   AdditionalManagerInfo: ResolverTypeWrapper<AdditionalManagerInfo>;
   Environment: Environment;
 };
@@ -420,6 +467,10 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Float: Scalars['Float'];
   examples__JSON: Scalars['examples__JSON'];
+  ChangesInput: ChangesInput;
+  Changes: Changes;
+  ChangedFieldInput: ChangedFieldInput;
+  ChangedField: ChangedField;
   AdditionalManagerInfo: AdditionalManagerInfo;
 };
 
@@ -522,6 +573,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdateManagerFirstNameArgs, 'firstName'>
   >;
+  logDB?: Resolver<
+    Maybe<ResolversTypes['Changes']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLogDbArgs, 'input'>
+  >;
 };
 
 export interface Examples__JsonScalarConfig
@@ -531,6 +588,76 @@ export interface Examples__JsonScalarConfig
   > {
   name: 'examples__JSON';
 }
+
+export type ChangesResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['Changes']
+> = {
+  comment?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  advertiserId?: Resolver<
+    ResolversTypes['Int'],
+    ParentType,
+    ContextType
+  >;
+  fields?: Resolver<
+    Array<ResolversTypes['ChangedField']>,
+    ParentType,
+    ContextType
+  >;
+  environment?: Resolver<
+    ResolversTypes['Environment'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ChangedFieldResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['ChangedField']
+> = {
+  fieldNamespace?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  fieldId?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  fieldName?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  oldValueJson?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  oldValueAsDisplayed?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  newValueJson?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  newValueAsDisplayed?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type AdditionalManagerInfoResolvers<
   ContextType = any,
@@ -549,6 +676,8 @@ export type Resolvers<ContextType = any> = {
   Manager?: ManagerResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   examples__JSON?: GraphQLScalarType;
+  Changes?: ChangesResolvers<ContextType>;
+  ChangedField?: ChangedFieldResolvers<ContextType>;
   AdditionalManagerInfo?: AdditionalManagerInfoResolvers<ContextType>;
 };
 
