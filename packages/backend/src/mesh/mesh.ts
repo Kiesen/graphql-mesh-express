@@ -1,7 +1,7 @@
 import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
 import { GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
-// import MySQLHandler from '@graphql-mesh/mysql';
+import MySQLHandler from '@graphql-mesh/mysql';
 import { MeshPubSub } from '@graphql-mesh/types';
 import { PubSub } from 'graphql-subscriptions';
 import LRUCache from '@graphql-mesh/cache-inmemory-lru';
@@ -17,6 +17,7 @@ import { customFetch } from '@src/mesh/customFetch/Fetch';
 // import { mutationConfig } from '@src/rights/config';
 // import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
+import connections from '@db/connections';
 
 /**
  * These mutations are going to be used also in relation to our
@@ -27,10 +28,10 @@ const mutationFieldsForSettingsChanges: readonly string[] = [
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
-  'logDB',
+  'insertChanges',
 ];
 
-const allowedQueries: readonly string[] = ['user'];
+const allowedQueries: readonly string[] = ['user', 'getChanges'];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -81,18 +82,17 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       //     },
       //   }),
       // },
-      // {
-      //   name: 'ChangelogDB',
-      //   handler: new MySQLHandler({
-      //     cache,
-      //     pubsub,
-      //     name: 'ChangelogDB',
-      //     config: {
-      //       // TODO: Add a pool via mysql package
-      //       // pool: DatabasePools.CHANGELOG_DB.getPool(),
-      //     },
-      //   }),
-      // },
+      {
+        name: 'ChangelogDB',
+        handler: new MySQLHandler({
+          cache,
+          pubsub,
+          name: 'ChangelogDB',
+          config: {
+            pool: connections.mysqlConnection,
+          },
+        }),
+      },
     ],
     additionalResolvers,
     additionalTypeDefs: [additionalTypeDefs], // Needs to be wrapped in an array
