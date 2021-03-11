@@ -10,11 +10,11 @@ import FilterTransform from '@graphql-mesh/transform-filter-schema';
 import CacheTransform from '@graphql-mesh/transform-cache';
 import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
 import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
-// import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
+import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
 import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
-// import { buildMutationResolverComposers } from '@src/rights/rights';
-// import { mutationConfig } from '@src/rights/config';
+import { buildMutationResolverComposers } from '@src/rights/rights';
+import { mutationConfig } from '@src/rights/config';
 // import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
 import connections from '@db/connections';
@@ -24,14 +24,18 @@ import connections from '@db/connections';
  * `logDB` mutation.
  */
 const mutationFieldsForSettingsChanges: readonly string[] = [
-  'updateFirstName',
+  'updateManagerFirstName',
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
   'insertChanges',
 ];
 
-const allowedQueries: readonly string[] = ['user', 'getChanges'];
+const allowedQueries: readonly string[] = [
+  'manager',
+  'getChanges',
+  'userRights',
+];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -118,15 +122,14 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           `Query.{${allowedQueries.join(', ')}}`,
         ],
       }),
-      // TODO:
-      // new ResolversCompositionTransform({
-      //   cache,
-      //   pubsub,
-      //   config: [
-      //     //  Resolvers which are placed below have higher precedence.
-      //     // ...buildMutationResolverComposers(mutationConfig),
-      //   ],
-      // }),
+      new ResolversCompositionTransform({
+        cache,
+        pubsub,
+        config: [
+          //  Resolvers which are placed below have higher precedence.
+          ...buildMutationResolverComposers(mutationConfig),
+        ],
+      }),
     ],
   };
 };

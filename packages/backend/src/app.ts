@@ -2,14 +2,10 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { getMeshConfig } from '@src/mesh/mesh';
 import { getUserRights } from '@src/middleware/getUserRights';
+import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
+import { retry } from '@util/retry';
 // TODO:
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
-
-// const NODE_ENV = process.env.NODE_ENV as
-//   | 'test'
-//   | 'development'
-//   | 'staging'
-//   | 'production';
 
 const app = express();
 
@@ -22,17 +18,31 @@ app.get('/ping', (req, res) => {
   return res.send('pong');
 });
 
-getMeshConfig()
+app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
+
+retry(
+  getMeshConfig,
+  () => Promise.resolve(true),
+  (delay, count, error) => {
+    console.error(
+      `Error during GraphQL Mesh Schema creation: "${error}". Scheduled retry number ${count} in ${delay} seconds.`
+    );
+    // TODO: Get where errors are coming from
+  },
+  {
+    maxRetries: 5,
+    backOffMultiplier: 2,
+    delayMilliseconds: 2000, // 2s
+    maxDelayMilliseconds: 16000, // 16s
+    retryOnReject: true,
+  }
+)
   .then(
-    ({
-      schema,
-      contextBuilder,
-      cache,
-    }: // mutationFieldsForSettingsChanges,
-    any) => {
-      /**
-       * Instead of one we now execute multiple extensions and join their return values.
-       */
+    (
+      { schema, contextBuilder, cache } // mutationFieldsForSettingsChanges,
+    ) => {
+      console.log('GraphQL Mesh Schema has been successfully built');
+
       const extensions = (
         info: graphqlHTTP.RequestInfo
       ): { [key: string]: unknown } => ({
