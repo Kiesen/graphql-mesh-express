@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/faker": "^5.1.7",
+    "@types/mysql": "^2.15.18",
     "faker": "^5.4.0",
     "ts-node": "^9.1.1"
   }
