@@ -11,6 +11,10 @@ Readme is in progress
 
 - To make path aliasing work in `packages/backend` we need to register the `tsconfig-paths` module with `ts-node-dev` as shown [here](https://github.com/wclr/ts-node-dev/issues/95#issuecomment-743435649)
 
+# Example queries
+
+To checkout some example queries please use `packages/backend/example-queries/*` inside the GraphiQL playground at http://localhost:4848/graphql
+
 ## License
 
 This project is licensed under the MIT license - for details take a look at [LICENSE.md](LICENSE.md)
