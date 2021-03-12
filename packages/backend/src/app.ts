@@ -5,7 +5,6 @@ import { getUserRights } from '@src/middleware/getUserRights';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import { retry } from '@util/retry';
 import { logDBMutationValidation } from './validation/logDBMutationValidation';
-// TODO:
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
 
 const app = express();
