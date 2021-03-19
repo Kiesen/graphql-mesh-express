@@ -3,7 +3,6 @@ import faker from 'faker';
 
 import { CHANGES_TABLE, Change } from '../config/changes';
 import { USERS_TABLE, User } from '../config/users';
-import '../env';
 
 type ChangeSeed = Omit<Change, 'id'>;
 

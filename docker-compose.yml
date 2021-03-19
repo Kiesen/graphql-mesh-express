@@ -6,11 +6,11 @@ services:
     container_name: gql-mesh-database
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=mysql_db_name
-      - MYSQL_USER=mysql_user
-      - MYSQL_PASSWORD=mysql_pw
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}
     volumes:
       - /var/lib/mysql
     ports:
-      - 3306:3306
+      - ${MYSQL_PORT}:3306

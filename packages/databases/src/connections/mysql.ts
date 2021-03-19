@@ -1,12 +1,9 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
 
-/**
- * TODO:
- *
- * Move the .env file to the root
- */
-dotenv.config({ path: '../databases/.env' });
+// Get the path to project root
+const envPath = `${process.cwd().split('packages')[0]}.env`;
+dotenv.config({ path: envPath });
 
 const port = process.env.MYSQL_PORT
   ? parseInt(process.env.MYSQL_PORT, 10)
@@ -25,6 +22,4 @@ const mysqlConnection = mysql.createPool({
   connectionLimit: connectionLimit,
 });
 
-export default {
-  mysqlConnection,
-};
+export default mysqlConnection;
