@@ -21,7 +21,6 @@ const createSeeds = async (knex: Knex): Promise<ChangeSeed[]> => {
       user_uuid:
         users[Math.floor(Math.random() * users.length)]['uuid'],
       date_of_change: faker.date.past(),
-      field_namespace: faker.random.words(),
       field_id: faker.random.word(),
       old_value: `${changedValue}`,
       new_value: `${!changedValue}`,
