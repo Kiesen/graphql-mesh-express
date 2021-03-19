@@ -17,7 +17,7 @@ import { buildMutationResolverComposers } from '@src/rights/rights';
 import { mutationConfig } from '@src/rights/config';
 // import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
-import connections from '@db/connections';
+import mysqlConnection from '@db/connections/mysql';
 
 /**
  * These mutations are going to be used also in relation to our
@@ -93,7 +93,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           pubsub,
           name: 'ChangelogDB',
           config: {
-            pool: connections.mysqlConnection,
+            pool: mysqlConnection,
           },
         }),
       },

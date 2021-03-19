@@ -1,6 +1,9 @@
 import knex from 'knex';
+import dotenv from 'dotenv';
 
-import './env';
+// Get the path to project root
+const envPath = `${process.cwd().split('packages')[0]}.env`;
+dotenv.config({ path: envPath });
 
 const DB_PORT = process.env.MYSQL_PORT
   ? parseInt(process.env.MYSQL_PORT, 10)

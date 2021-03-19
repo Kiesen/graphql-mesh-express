@@ -3,7 +3,6 @@ import faker from 'faker';
 
 import { USERS_TABLE, User } from '../config/users';
 import { CHANGES_TABLE } from '../config/changes';
-import '../env';
 
 const createSeeds = (): User[] => {
   const numberOfSeeds = parseInt(process.env.USER_SEED_AMOUNT, 10);
