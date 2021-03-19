@@ -8,8 +8,7 @@ import {
  * We are just returning the input so that eventually the post-action extension,
  * which registered in the `graphqlHTTP` package, will act upon that data
  */
-export const insertChangesResolver: MutationResolvers<
+export const logDBResolver: MutationResolvers<
   any,
   MeshContext
->['insertChangesResolver'] = (parent, args, context): Changes =>
-  args.input;
+>['logDB'] = (parent, args, context): Changes => args.input;

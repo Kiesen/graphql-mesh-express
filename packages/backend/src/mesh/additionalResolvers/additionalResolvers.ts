@@ -1,4 +1,4 @@
-import { insertChangesResolver } from './mutationResolvers/insertChangesResolver';
+import { logDBResolver } from './mutationResolvers/insertChangesResolver';
 import { userRightsResolver } from './queryResolvers/userRights';
 import { additionalManagerInfoResolver } from './typeResolvers/additionalManagerInfo';
 import { managerResolver } from './typeResolvers/manager';
@@ -12,7 +12,7 @@ import { managerResolver } from './typeResolvers/manager';
  */
 const additionalResolvers = {
   Mutation: {
-    insertChanges: insertChangesResolver,
+    logDB: logDBResolver,
   },
   Query: {
     userRights: userRightsResolver,

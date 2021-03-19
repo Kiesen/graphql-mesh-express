@@ -2,10 +2,7 @@ import { Changes } from '@src/mesh/types/generated';
 
 export type ChangelogDBRow = {
   memberUuid: string;
-  advertiserId: number;
-  fieldNamespace: string;
   fieldId: string;
-  fieldName: string;
   oldValueRaw: string;
   oldValue: string;
   newValueRaw: string;

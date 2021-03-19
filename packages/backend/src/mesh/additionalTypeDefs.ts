@@ -1,13 +1,9 @@
 import gql from 'graphql-tag';
 
 const changedFields = /* GraphQL */ `
-    fieldNamespace: String!
     fieldId: String!
-    fieldName: String!
-    oldValueJson: String!
-    oldValueAsDisplayed: String!
-    newValueJson: String!
-    newValueAsDisplayed: String!
+    oldValue: String!
+    newValue: String!
     path: String!
 `;
 
@@ -22,7 +18,6 @@ export const additionalTypeDefs = gql`
 
   input ChangesInput {
     comment: String!
-    advertiserId: Int!
     fields: [ChangedFieldInput!]!
     environment: Environment!
   }

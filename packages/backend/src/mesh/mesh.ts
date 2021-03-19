@@ -28,7 +28,7 @@ const mutationFieldsForSettingsChanges: readonly string[] = [
 ];
 const allowedMutations: readonly string[] = [
   ...mutationFieldsForSettingsChanges,
-  'insertChanges',
+  'logDB',
 ];
 
 const allowedQueries: readonly string[] = [
