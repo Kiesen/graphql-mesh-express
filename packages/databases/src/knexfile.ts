@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 
 // Get the path to project root
 const envPath = `${process.cwd().split('packages')[0]}.env`;
-console.log(envPath);
 dotenv.config({ path: envPath });
 
 const DB_PORT = process.env.DB_PORT
