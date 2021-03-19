@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  gqle-mesh-database:
+  gql-mesh-database:
     image: mysql:5.7.25
-    container_name: gqle-mesh-database
+    container_name: gql-mesh-database
     restart: unless-stopped
     environment:
       - MYSQL_DATABASE=mysql_db_name

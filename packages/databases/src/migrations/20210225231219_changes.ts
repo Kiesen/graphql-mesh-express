@@ -7,7 +7,6 @@ export async function up(knex: Knex): Promise<void> {
   const { TABLE_NAME, COLUMN_NAMES } = CHANGES_TABLE;
   return knex.schema.createTable(TABLE_NAME, (table) => {
     table.bigIncrements(COLUMN_NAMES.ID).notNullable().unique();
-    table.integer(COLUMN_NAMES.SERVICE_ID).notNullable();
     table.timestamp(COLUMN_NAMES.DATE_OF_CHANGE).notNullable();
     table.text(COLUMN_NAMES.FIELD_NAMESPACE).notNullable();
     table.text(COLUMN_NAMES.FIELD_ID).notNullable();

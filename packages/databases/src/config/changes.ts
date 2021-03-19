@@ -1,7 +1,6 @@
 export type Change = {
   id: number;
   user_uuid: string;
-  service_id: number;
   date_of_change: Date;
   field_namespace: string;
   field_id: string;
@@ -15,7 +14,6 @@ export const CHANGES_TABLE = {
   COLUMN_NAMES: {
     ID: 'id',
     USER_UUID: 'user_uuid',
-    SERVICE_ID: 'service_id',
     DATE_OF_CHANGE: 'date_of_change',
     FIELD_NAMESPACE: 'field_namespace',
     FIELD_ID: 'field_id',

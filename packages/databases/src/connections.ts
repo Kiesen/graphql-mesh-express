@@ -1,7 +1,12 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
 
-dotenv.config();
+/**
+ * TODO:
+ *
+ * Move the .env file to the root
+ */
+dotenv.config({ path: '../databases/.env' });
 
 const port = process.env.MYSQL_PORT
   ? parseInt(process.env.MYSQL_PORT, 10)

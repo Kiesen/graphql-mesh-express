@@ -11,8 +11,8 @@ const app = express();
 
 // TODO: Add persist change extension
 const persistChangeExtension: any = () => void 0;
-// TODO: Add logDBMutationValidation
-// const logDBMutationValidation: any = () => {};
+// TODO: Add insertChangesMutationValidation
+// const insertChangesMutationValidation: any = () => {};
 
 app.get('/ping', (req, res) => {
   return res.send('pong');
@@ -63,7 +63,7 @@ retry(
           graphiql: true,
           extensions,
           validationRules: [
-            // logDBMutationValidation(mutationFieldsForSettingsChanges),
+            // insertChangesMutationValidation(mutationFieldsForSettingsChanges),
           ],
         }))
       );

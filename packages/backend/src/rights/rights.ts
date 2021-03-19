@@ -37,7 +37,7 @@ export const buildMutationResolverComposers = (
     composer: blockingComposer,
   },
   {
-    resolver: 'Mutation.logDB', // logDB is a special mutation that does not require any user rights
+    resolver: 'Mutation.insertChanges', // insertChanges is a special mutation that does not require any user rights
     composer: neverBlockingComposer,
   },
   ...Object.keys(mutationConfig).map((mutationName) => ({
