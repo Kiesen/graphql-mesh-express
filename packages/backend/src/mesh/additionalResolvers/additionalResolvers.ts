@@ -12,7 +12,7 @@ import { managerResolver } from './typeResolvers/manager';
 const additionalResolvers = {
   Mutation: {
     // TODO: Make the logDBResolver
-    // logDB: logDBResolver,
+    // insertChanges: insertChangesResolver,
   },
   Query: {
     userRights: userRightsResolver,
