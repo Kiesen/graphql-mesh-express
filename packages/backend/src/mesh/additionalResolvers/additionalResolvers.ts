@@ -1,4 +1,4 @@
-import { logDBResolver } from './mutationResolvers/insertChangesResolver';
+import { logDBResolver } from './mutationResolvers/logDBResolver';
 import { userRightsResolver } from './queryResolvers/userRights';
 import { additionalManagerInfoResolver } from './typeResolvers/additionalManagerInfo';
 import { managerResolver } from './typeResolvers/manager';

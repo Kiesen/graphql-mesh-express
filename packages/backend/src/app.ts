@@ -4,13 +4,12 @@ import { getMeshConfig } from '@src/mesh/mesh';
 import { getUserRights } from '@src/middleware/getUserRights';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import { retry } from '@util/retry';
-import { logDBMutationValidation } from './validation/logDBMutationValidation';
-// import { persistChangeExtension } from '../changes/persistChangeExtension';
+import { logDBMutationValidation } from '@src/validation/logDBMutationValidation';
+import { persistChangeExtension } from '@src/changes/persistChangeExtension';
 
 const app = express();
 
 // TODO: Add persist change extension
-const persistChangeExtension: any = () => void 0;
 
 app.get('/ping', (req, res) => {
   return res.send('pong');

@@ -1,7 +1,7 @@
 import { MeshContext } from '@internalTypes/context';
 import {
   MutationResolvers,
-  Changes,
+  LogDbChanges,
 } from '@src/mesh/types/generated';
 
 /**
@@ -11,4 +11,4 @@ import {
 export const logDBResolver: MutationResolvers<
   any,
   MeshContext
->['logDB'] = (parent, args, context): Changes => args.input;
+>['logDB'] = (parent, args, context): LogDbChanges => args.input;
