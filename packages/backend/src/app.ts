@@ -4,15 +4,13 @@ import { getMeshConfig } from '@src/mesh/mesh';
 import { getUserRights } from '@src/middleware/getUserRights';
 import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import { retry } from '@util/retry';
-// TODO:
+import { logDBMutationValidation } from './validation/logDBMutationValidation';
 // import { persistChangeExtension } from '../changes/persistChangeExtension';
 
 const app = express();
 
 // TODO: Add persist change extension
 const persistChangeExtension: any = () => void 0;
-// TODO: Add insertChangesMutationValidation
-// const insertChangesMutationValidation: any = () => {};
 
 app.get('/ping', (req, res) => {
   return res.send('pong');
@@ -38,9 +36,12 @@ retry(
   }
 )
   .then(
-    (
-      { schema, contextBuilder, cache } // mutationFieldsForSettingsChanges,
-    ) => {
+    ({
+      schema,
+      contextBuilder,
+      cache,
+      mutationFieldsForSettingsChanges,
+    }) => {
       console.log('GraphQL Mesh Schema has been successfully built');
 
       const extensions = (
@@ -63,7 +64,7 @@ retry(
           graphiql: true,
           extensions,
           validationRules: [
-            // insertChangesMutationValidation(mutationFieldsForSettingsChanges),
+            logDBMutationValidation(mutationFieldsForSettingsChanges),
           ],
         }))
       );

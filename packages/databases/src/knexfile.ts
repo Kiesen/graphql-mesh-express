@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 const envPath = `${process.cwd().split('packages')[0]}.env`;
 dotenv.config({ path: envPath });
 
-const DB_PORT = process.env.DB_PORT
-  ? parseInt(process.env.DB_PORT, 10)
+const DB_PORT = process.env.MYSQL_PORT
+  ? parseInt(process.env.MYSQL_PORT, 10)
   : 3306;
 
 const config: knex.Config = {
