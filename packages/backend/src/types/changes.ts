@@ -1,11 +1,9 @@
-import { Changes } from '@src/mesh/types/generated';
+import { LogDbChanges } from '@src/mesh/types/generated';
 
 export type ChangelogDBRow = {
   memberUuid: string;
   fieldId: string;
-  oldValueRaw: string;
   oldValue: string;
-  newValueRaw: string;
   newValue: string;
   comment: string;
 };
@@ -13,10 +11,10 @@ export type ChangelogDBRow = {
 export type ChangelogDBRows = ChangelogDBRow[];
 
 export type FailedChangeReport = {
-  fieldName: string;
+  fieldId: string;
   path: string;
 };
 
 export type FailedChangeReports = FailedChangeReport[];
 
-export type LogData = Omit<Changes, '__typename'>;
+export type LogData = Omit<LogDbChanges, '__typename'>;

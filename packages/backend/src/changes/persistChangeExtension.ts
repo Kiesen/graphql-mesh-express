@@ -1,4 +1,3 @@
-import { MeshContext } from '@src/types/context';
 import {
   DocumentNode,
   OperationDefinitionNode,
@@ -12,18 +11,9 @@ import {
   LogData,
 } from '../types/changes';
 import { RequestInfo } from 'express-graphql';
-import { ChangedField } from '@src/mesh/types/generated';
-
-// TODO: Adjust table banes
-const CHANGELOG_DEV_TABLE = {
-  TABLE_NAME: 'CHANGELOG_DEV_TABLE',
-};
-const CHANGELOG_LIVE_TABLE = {
-  TABLE_NAME: 'CHANGELOG_LIVE_TABLE',
-};
-
-// TODO: Adjust the function
-const insertChangelogs = (...params: any[]): any => void 0;
+import knex from '@db/connections/knex';
+import { CHANGES_TABLE } from '@db/config/changes';
+import { LogDbChangedField } from '@src/mesh/types/generated';
 
 /**
  * Returns true if the change specified in `field` is reflected in `result`.
@@ -32,10 +22,9 @@ const insertChangelogs = (...params: any[]): any => void 0;
  */
 export const isSuccessfulChange = (
   result: unknown,
-  field: ChangedField
+  field: LogDbChangedField
 ): boolean =>
-  get(result, `data.${field.path}`) ===
-  JSON.parse(field.newValueJson);
+  get(result, `data.${field.path}`) === JSON.parse(field.newValue);
 
 /* Partitions an array of ChangedField objects into two categories by
  * a using a predicate function `groupBy`. This results in an array
@@ -47,7 +36,7 @@ export const isSuccessfulChange = (
  * above is used to group changes into successful and failed ones.
  */
 export const groupChanges = (
-  groupBy: (result: unknown, field: ChangedField) => boolean
+  groupBy: (result: unknown, field: LogDbChangedField) => boolean
 ) => (
   result: unknown,
   fields: LogData['fields']
@@ -56,20 +45,14 @@ export const groupChanges = (
 
 export const mapToChangelogDBRows = (
   comment: string,
-  advertiserId: number,
   memberUuid: string,
   fields: LogData['fields']
 ): ChangelogDBRows =>
   fields.map((field) => ({
     memberUuid,
-    advertiserId,
-    fieldNamespace: field.fieldNamespace,
     fieldId: field.fieldId,
-    fieldName: field.fieldName,
-    oldValueRaw: field.oldValueJson,
-    oldValue: field.oldValueAsDisplayed,
-    newValueRaw: field.newValueJson,
-    newValue: field.newValueAsDisplayed,
+    oldValue: field.oldValue,
+    newValue: field.newValue,
     comment,
   }));
 
@@ -77,7 +60,7 @@ export const mapToFailedChangeReports = (
   fields: LogData['fields']
 ): FailedChangeReports =>
   fields.map((field) => ({
-    fieldName: field.fieldName,
+    fieldId: field.fieldId,
     path: field.path,
   }));
 
@@ -118,18 +101,43 @@ export const persistChangeExtension = ({
 
     if (successfulChanges.length > 0) {
       // Depending on the environment set the corresponding table
+      // TODO: Use another table for dev
       const tableName =
         logData.environment === 'live'
-          ? CHANGELOG_LIVE_TABLE.TABLE_NAME
-          : CHANGELOG_DEV_TABLE.TABLE_NAME;
+          ? CHANGES_TABLE.TABLE_NAME
+          : CHANGES_TABLE.TABLE_NAME;
 
       const changelogs = mapToChangelogDBRows(
         logData.comment,
-        logData.advertiserId,
-        (context as MeshContext).res.locals.memberUuid,
+        // This is a fake user which is also inserted as special seed
+        // inside the knex table config.
+        '00000000-0000-0000-0000-000000000000',
         successfulChanges
       );
-      insertChangelogs(changelogs, tableName);
+
+      for (const change of changelogs) {
+        knex(tableName)
+          .insert({
+            user_uuid: change.memberUuid,
+            date_of_change: new Date(),
+            new_value: change.newValue,
+            old_value: change.oldValue,
+            comment: change.comment,
+            field_id: change.fieldId,
+          })
+          .then((result) => {
+            console.log(
+              'Successfully inserted a change in the changelog db.',
+              result
+            );
+          })
+          .catch((e) => {
+            console.error(
+              'Failed to insert a change in the changelog db',
+              e
+            );
+          });
+      }
     }
 
     // any failed changes will be reported back to the frontend

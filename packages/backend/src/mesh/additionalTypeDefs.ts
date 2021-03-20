@@ -13,27 +13,26 @@ export const additionalTypeDefs = gql`
   }
 
   extend type Mutation {
-    logDB(input: ChangesInput!): Changes
+    logDB(input: LogDBChangesInput!): LogDBChanges
   }
 
-  input ChangesInput {
+  input LogDBChangesInput {
     comment: String!
-    fields: [ChangedFieldInput!]!
+    fields: [LogDBChangedFieldInput!]!
     environment: Environment!
   }
 
-  type Changes {
+  type LogDBChanges {
     comment: String!
-    advertiserId: Int!
-    fields: [ChangedField!]!
+    fields: [LogDBChangedField!]!
     environment: Environment!
   }
 
-  input ChangedFieldInput {
+  input LogDBChangedFieldInput {
     ${changedFields}
   }
 
-  type ChangedField {
+  type LogDBChangedField {
     ${changedFields}
   }
 

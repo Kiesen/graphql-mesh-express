@@ -7,7 +7,12 @@ import { CHANGES_TABLE } from '../config/changes';
 const createSeeds = (): User[] => {
   const numberOfSeeds = parseInt(process.env.USER_SEED_AMOUNT, 10);
 
-  const seeds: User[] = [];
+  const seeds: User[] = [
+    {
+      name: 'Max Musterman',
+      uuid: '00000000-0000-0000-0000-000000000000',
+    },
+  ];
 
   for (let seed = 0; seed < numberOfSeeds; seed++) {
     const user: User = {

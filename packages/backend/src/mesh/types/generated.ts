@@ -19,12 +19,38 @@ export type Scalars = {
   Int: number;
   Float: number;
   examples__JSON: any;
+  /** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+  BigInt: any;
+  /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
+  Timestamp: any;
 };
 
 export type Query = {
   __typename?: 'Query';
   manager: Manager;
+  getChanges?: Maybe<Array<Maybe<Changes>>>;
   userRights: Array<Scalars['String']>;
+};
+
+export type QueryGetChangesArgs = {
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  where?: Maybe<ChangesWhereInput>;
+  orderBy?: Maybe<ChangesOrderByInput>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  updateManagerFirstName?: Maybe<Manager>;
+  logDB?: Maybe<LogDbChanges>;
+};
+
+export type MutationUpdateManagerFirstNameArgs = {
+  firstName: Scalars['String'];
+};
+
+export type MutationLogDbArgs = {
+  input: LogDbChangesInput;
 };
 
 export type Manager = {
@@ -34,20 +60,6 @@ export type Manager = {
   lastName: Scalars['String'];
   phoneNumber: Scalars['String'];
   additionalInfo: AdditionalManagerInfo;
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  updateManagerFirstName?: Maybe<Manager>;
-  logDB?: Maybe<Changes>;
-};
-
-export type MutationUpdateManagerFirstNameArgs = {
-  firstName: Scalars['String'];
-};
-
-export type MutationLogDbArgs = {
-  input: ChangesInput;
 };
 
 export enum Fake__Locale {
@@ -230,41 +242,183 @@ export type Fake__Options = {
   precisionNumber?: Maybe<Scalars['Float']>;
 };
 
-export type ChangesInput = {
-  comment: Scalars['String'];
-  advertiserId: Scalars['Int'];
-  fields: Array<ChangedFieldInput>;
-  environment: Environment;
-};
-
 export type Changes = {
   __typename?: 'Changes';
+  id: Scalars['BigInt'];
+  date_of_change: Scalars['Timestamp'];
+  field_id: Scalars['String'];
+  old_value: Scalars['String'];
+  new_value: Scalars['String'];
   comment: Scalars['String'];
-  advertiserId: Scalars['Int'];
-  fields: Array<ChangedField>;
+  user_uuid?: Maybe<Scalars['String']>;
+  user?: Maybe<Array<Maybe<User>>>;
+};
+
+export type ChangesUserArgs = {
+  where?: Maybe<UserWhereInput>;
+  orderBy?: Maybe<UserOrderByInput>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  uuid: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type UserWhereInput = {
+  uuid?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type UserOrderByInput = {
+  uuid?: Maybe<OrderBy>;
+  name?: Maybe<OrderBy>;
+};
+
+export enum OrderBy {
+  Asc = 'asc',
+  Desc = 'desc',
+}
+
+export type ChangesWhereInput = {
+  id?: Maybe<Scalars['String']>;
+  date_of_change?: Maybe<Scalars['String']>;
+  field_id?: Maybe<Scalars['String']>;
+  old_value?: Maybe<Scalars['String']>;
+  new_value?: Maybe<Scalars['String']>;
+  comment?: Maybe<Scalars['String']>;
+  user_uuid?: Maybe<Scalars['String']>;
+};
+
+export type ChangesOrderByInput = {
+  id?: Maybe<OrderBy>;
+  date_of_change?: Maybe<OrderBy>;
+  field_id?: Maybe<OrderBy>;
+  old_value?: Maybe<OrderBy>;
+  new_value?: Maybe<OrderBy>;
+  comment?: Maybe<OrderBy>;
+  user_uuid?: Maybe<OrderBy>;
+};
+
+export type KnexMigrations = {
+  __typename?: 'KnexMigrations';
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
+  batch?: Maybe<Scalars['Int']>;
+  migration_time: Scalars['Timestamp'];
+};
+
+export type KnexMigrationsWhereInput = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  batch?: Maybe<Scalars['String']>;
+  migration_time?: Maybe<Scalars['String']>;
+};
+
+export type KnexMigrationsOrderByInput = {
+  id?: Maybe<OrderBy>;
+  name?: Maybe<OrderBy>;
+  batch?: Maybe<OrderBy>;
+  migration_time?: Maybe<OrderBy>;
+};
+
+export type KnexMigrationsLock = {
+  __typename?: 'KnexMigrationsLock';
+  index: Scalars['Int'];
+  is_locked?: Maybe<Scalars['Int']>;
+};
+
+export type KnexMigrationsLockWhereInput = {
+  index?: Maybe<Scalars['String']>;
+  is_locked?: Maybe<Scalars['String']>;
+};
+
+export type KnexMigrationsLockOrderByInput = {
+  index?: Maybe<OrderBy>;
+  is_locked?: Maybe<OrderBy>;
+};
+
+export type ChangesInsertInput = {
+  id: Scalars['BigInt'];
+  date_of_change: Scalars['Timestamp'];
+  field_id: Scalars['String'];
+  old_value: Scalars['String'];
+  new_value: Scalars['String'];
+  comment: Scalars['String'];
+  user_uuid?: Maybe<Scalars['String']>;
+};
+
+export type ChangesUpdateInput = {
+  id?: Maybe<Scalars['BigInt']>;
+  date_of_change?: Maybe<Scalars['Timestamp']>;
+  field_id?: Maybe<Scalars['String']>;
+  old_value?: Maybe<Scalars['String']>;
+  new_value?: Maybe<Scalars['String']>;
+  comment?: Maybe<Scalars['String']>;
+  user_uuid?: Maybe<Scalars['String']>;
+};
+
+export type KnexMigrationsInsertInput = {
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
+  batch?: Maybe<Scalars['Int']>;
+  migration_time: Scalars['Timestamp'];
+};
+
+export type KnexMigrationsUpdateInput = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  batch?: Maybe<Scalars['Int']>;
+  migration_time?: Maybe<Scalars['Timestamp']>;
+};
+
+export type KnexMigrationsLockInsertInput = {
+  index: Scalars['Int'];
+  is_locked?: Maybe<Scalars['Int']>;
+};
+
+export type KnexMigrationsLockUpdateInput = {
+  index?: Maybe<Scalars['Int']>;
+  is_locked?: Maybe<Scalars['Int']>;
+};
+
+export type UserInsertInput = {
+  uuid: Scalars['String'];
+  name: Scalars['String'];
+};
+
+export type UserUpdateInput = {
+  uuid?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+export type LogDbChangesInput = {
+  comment: Scalars['String'];
+  fields: Array<LogDbChangedFieldInput>;
   environment: Environment;
 };
 
-export type ChangedFieldInput = {
-  fieldNamespace: Scalars['String'];
+export type LogDbChanges = {
+  __typename?: 'LogDBChanges';
+  comment: Scalars['String'];
+  fields: Array<LogDbChangedField>;
+  environment: Environment;
+};
+
+export type LogDbChangedFieldInput = {
   fieldId: Scalars['String'];
-  fieldName: Scalars['String'];
-  oldValueJson: Scalars['String'];
-  oldValueAsDisplayed: Scalars['String'];
-  newValueJson: Scalars['String'];
-  newValueAsDisplayed: Scalars['String'];
+  oldValue: Scalars['String'];
+  newValue: Scalars['String'];
   path: Scalars['String'];
 };
 
-export type ChangedField = {
-  __typename?: 'ChangedField';
-  fieldNamespace: Scalars['String'];
+export type LogDbChangedField = {
+  __typename?: 'LogDBChangedField';
   fieldId: Scalars['String'];
-  fieldName: Scalars['String'];
-  oldValueJson: Scalars['String'];
-  oldValueAsDisplayed: Scalars['String'];
-  newValueJson: Scalars['String'];
-  newValueAsDisplayed: Scalars['String'];
+  oldValue: Scalars['String'];
+  newValue: Scalars['String'];
   path: Scalars['String'];
 };
 
@@ -431,24 +585,47 @@ export type DirectiveResolverFn<
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Manager: ResolverTypeWrapper<Manager>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  Mutation: ResolverTypeWrapper<{}>;
   fake__Locale: Fake__Locale;
   fake__Types: Fake__Types;
   fake__imageSize: Fake__ImageSize;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   fake__loremSize: Fake__LoremSize;
   fake__color: Fake__Color;
   fake__options: Fake__Options;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   examples__JSON: ResolverTypeWrapper<Scalars['examples__JSON']>;
-  ChangesInput: ChangesInput;
   Changes: ResolverTypeWrapper<Changes>;
-  ChangedFieldInput: ChangedFieldInput;
-  ChangedField: ResolverTypeWrapper<ChangedField>;
+  BigInt: ResolverTypeWrapper<Scalars['BigInt']>;
+  Timestamp: ResolverTypeWrapper<Scalars['Timestamp']>;
+  User: ResolverTypeWrapper<User>;
+  UserWhereInput: UserWhereInput;
+  UserOrderByInput: UserOrderByInput;
+  OrderBy: OrderBy;
+  ChangesWhereInput: ChangesWhereInput;
+  ChangesOrderByInput: ChangesOrderByInput;
+  KnexMigrations: ResolverTypeWrapper<KnexMigrations>;
+  KnexMigrationsWhereInput: KnexMigrationsWhereInput;
+  KnexMigrationsOrderByInput: KnexMigrationsOrderByInput;
+  KnexMigrationsLock: ResolverTypeWrapper<KnexMigrationsLock>;
+  KnexMigrationsLockWhereInput: KnexMigrationsLockWhereInput;
+  KnexMigrationsLockOrderByInput: KnexMigrationsLockOrderByInput;
+  ChangesInsertInput: ChangesInsertInput;
+  ChangesUpdateInput: ChangesUpdateInput;
+  KnexMigrationsInsertInput: KnexMigrationsInsertInput;
+  KnexMigrationsUpdateInput: KnexMigrationsUpdateInput;
+  KnexMigrationsLockInsertInput: KnexMigrationsLockInsertInput;
+  KnexMigrationsLockUpdateInput: KnexMigrationsLockUpdateInput;
+  UserInsertInput: UserInsertInput;
+  UserUpdateInput: UserUpdateInput;
+  LogDBChangesInput: LogDbChangesInput;
+  LogDBChanges: ResolverTypeWrapper<LogDbChanges>;
+  LogDBChangedFieldInput: LogDbChangedFieldInput;
+  LogDBChangedField: ResolverTypeWrapper<LogDbChangedField>;
   AdditionalManagerInfo: ResolverTypeWrapper<AdditionalManagerInfo>;
   Environment: Environment;
 };
@@ -456,59 +633,45 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
+  Int: Scalars['Int'];
   String: Scalars['String'];
+  Mutation: {};
   Manager: Manager;
   ID: Scalars['ID'];
-  Mutation: {};
   fake__imageSize: Fake__ImageSize;
-  Int: Scalars['Int'];
   fake__color: Fake__Color;
   fake__options: Fake__Options;
   Boolean: Scalars['Boolean'];
   Float: Scalars['Float'];
   examples__JSON: Scalars['examples__JSON'];
-  ChangesInput: ChangesInput;
   Changes: Changes;
-  ChangedFieldInput: ChangedFieldInput;
-  ChangedField: ChangedField;
+  BigInt: Scalars['BigInt'];
+  Timestamp: Scalars['Timestamp'];
+  User: User;
+  UserWhereInput: UserWhereInput;
+  UserOrderByInput: UserOrderByInput;
+  ChangesWhereInput: ChangesWhereInput;
+  ChangesOrderByInput: ChangesOrderByInput;
+  KnexMigrations: KnexMigrations;
+  KnexMigrationsWhereInput: KnexMigrationsWhereInput;
+  KnexMigrationsOrderByInput: KnexMigrationsOrderByInput;
+  KnexMigrationsLock: KnexMigrationsLock;
+  KnexMigrationsLockWhereInput: KnexMigrationsLockWhereInput;
+  KnexMigrationsLockOrderByInput: KnexMigrationsLockOrderByInput;
+  ChangesInsertInput: ChangesInsertInput;
+  ChangesUpdateInput: ChangesUpdateInput;
+  KnexMigrationsInsertInput: KnexMigrationsInsertInput;
+  KnexMigrationsUpdateInput: KnexMigrationsUpdateInput;
+  KnexMigrationsLockInsertInput: KnexMigrationsLockInsertInput;
+  KnexMigrationsLockUpdateInput: KnexMigrationsLockUpdateInput;
+  UserInsertInput: UserInsertInput;
+  UserUpdateInput: UserUpdateInput;
+  LogDBChangesInput: LogDbChangesInput;
+  LogDBChanges: LogDbChanges;
+  LogDBChangedFieldInput: LogDbChangedFieldInput;
+  LogDBChangedField: LogDbChangedField;
   AdditionalManagerInfo: AdditionalManagerInfo;
 };
-
-export type FakeDirectiveArgs = {
-  type: Fake__Types;
-  options?: Maybe<Fake__Options>;
-  locale?: Maybe<Fake__Locale>;
-};
-
-export type FakeDirectiveResolver<
-  Result,
-  Parent,
-  ContextType = any,
-  Args = FakeDirectiveArgs
-> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type ListLengthDirectiveArgs = {
-  min: Scalars['Int'];
-  max: Scalars['Int'];
-};
-
-export type ListLengthDirectiveResolver<
-  Result,
-  Parent,
-  ContextType = any,
-  Args = ListLengthDirectiveArgs
-> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
-
-export type ExamplesDirectiveArgs = {
-  values: Array<Maybe<Scalars['examples__JSON']>>;
-};
-
-export type ExamplesDirectiveResolver<
-  Result,
-  Parent,
-  ContextType = any,
-  Args = ExamplesDirectiveArgs
-> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type LiveDirectiveArgs = {};
 
@@ -528,10 +691,34 @@ export type QueryResolvers<
     ParentType,
     ContextType
   >;
+  getChanges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Changes']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetChangesArgs, never>
+  >;
   userRights?: Resolver<
     Array<ResolversTypes['String']>,
     ParentType,
     ContextType
+  >;
+};
+
+export type MutationResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['Mutation']
+> = {
+  updateManagerFirstName?: Resolver<
+    Maybe<ResolversTypes['Manager']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateManagerFirstNameArgs, 'firstName'>
+  >;
+  logDB?: Resolver<
+    Maybe<ResolversTypes['LogDBChanges']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLogDbArgs, 'input'>
   >;
 };
 
@@ -563,24 +750,6 @@ export type ManagerResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MutationResolvers<
-  ContextType = any,
-  ParentType = ResolversParentTypes['Mutation']
-> = {
-  updateManagerFirstName?: Resolver<
-    Maybe<ResolversTypes['Manager']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationUpdateManagerFirstNameArgs, 'firstName'>
-  >;
-  logDB?: Resolver<
-    Maybe<ResolversTypes['Changes']>,
-    ParentType,
-    ContextType,
-    RequireFields<MutationLogDbArgs, 'input'>
-  >;
-};
-
 export interface Examples__JsonScalarConfig
   extends GraphQLScalarTypeConfig<
     ResolversTypes['examples__JSON'],
@@ -593,18 +762,112 @@ export type ChangesResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes['Changes']
 > = {
+  id?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  date_of_change?: Resolver<
+    ResolversTypes['Timestamp'],
+    ParentType,
+    ContextType
+  >;
+  field_id?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  old_value?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
+  new_value?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType
+  >;
   comment?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
   >;
-  advertiserId?: Resolver<
-    ResolversTypes['Int'],
+  user_uuid?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  user?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['User']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<ChangesUserArgs, never>
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface BigIntScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['BigInt'], any> {
+  name: 'BigInt';
+}
+
+export interface TimestampScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['Timestamp'], any> {
+  name: 'Timestamp';
+}
+
+export type UserResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['User']
+> = {
+  uuid?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type KnexMigrationsResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['KnexMigrations']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  batch?: Resolver<
+    Maybe<ResolversTypes['Int']>,
+    ParentType,
+    ContextType
+  >;
+  migration_time?: Resolver<
+    ResolversTypes['Timestamp'],
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type KnexMigrationsLockResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['KnexMigrationsLock']
+> = {
+  index?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  is_locked?: Resolver<
+    Maybe<ResolversTypes['Int']>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LogDbChangesResolvers<
+  ContextType = any,
+  ParentType = ResolversParentTypes['LogDBChanges']
+> = {
+  comment?: Resolver<
+    ResolversTypes['String'],
     ParentType,
     ContextType
   >;
   fields?: Resolver<
-    Array<ResolversTypes['ChangedField']>,
+    Array<ResolversTypes['LogDBChangedField']>,
     ParentType,
     ContextType
   >;
@@ -616,41 +879,21 @@ export type ChangesResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ChangedFieldResolvers<
+export type LogDbChangedFieldResolvers<
   ContextType = any,
-  ParentType = ResolversParentTypes['ChangedField']
+  ParentType = ResolversParentTypes['LogDBChangedField']
 > = {
-  fieldNamespace?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
   fieldId?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
   >;
-  fieldName?: Resolver<
+  oldValue?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
   >;
-  oldValueJson?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  oldValueAsDisplayed?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  newValueJson?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  newValueAsDisplayed?: Resolver<
+  newValue?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
@@ -673,11 +916,17 @@ export type AdditionalManagerInfoResolvers<
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
-  Manager?: ManagerResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  Manager?: ManagerResolvers<ContextType>;
   examples__JSON?: GraphQLScalarType;
   Changes?: ChangesResolvers<ContextType>;
-  ChangedField?: ChangedFieldResolvers<ContextType>;
+  BigInt?: GraphQLScalarType;
+  Timestamp?: GraphQLScalarType;
+  User?: UserResolvers<ContextType>;
+  KnexMigrations?: KnexMigrationsResolvers<ContextType>;
+  KnexMigrationsLock?: KnexMigrationsLockResolvers<ContextType>;
+  LogDBChanges?: LogDbChangesResolvers<ContextType>;
+  LogDBChangedField?: LogDbChangedFieldResolvers<ContextType>;
   AdditionalManagerInfo?: AdditionalManagerInfoResolvers<ContextType>;
 };
 
@@ -687,9 +936,6 @@ export type Resolvers<ContextType = any> = {
  */
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 export type DirectiveResolvers<ContextType = any> = {
-  fake?: FakeDirectiveResolver<any, any, ContextType>;
-  listLength?: ListLengthDirectiveResolver<any, any, ContextType>;
-  examples?: ExamplesDirectiveResolver<any, any, ContextType>;
   live?: LiveDirectiveResolver<any, any, ContextType>;
 };
 
