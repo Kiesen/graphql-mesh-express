@@ -5,7 +5,7 @@ import { USER_TABLE, User } from '../config/user';
 import {
   CHANGELOG_LIVE_TABLE,
   CHANGELOG_DEV_TABLE,
-} from '../config/change';
+} from '../config/changelog';
 
 const createSeeds = (): User[] => {
   const numberOfSeeds = parseInt(process.env.USER_SEED_AMOUNT, 10);

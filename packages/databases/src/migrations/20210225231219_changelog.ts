@@ -1,5 +1,5 @@
 import * as Knex from 'knex';
-import { CHANGELOG_LIVE_TABLE } from '../config/change';
+import { CHANGELOG_LIVE_TABLE } from '../config/changelog';
 
 import { USER_TABLE } from '../config/user';
 
