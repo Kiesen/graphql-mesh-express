@@ -12,7 +12,7 @@ import {
   FailedChangeReports,
   LogData,
 } from '@internalTypes/changes';
-import { LogDbChangedField } from '@src/mesh/types/generated';
+import { LogDbChangedField } from '@internalTypes/schema';
 import knex from '@db/connections/knex';
 import {
   CHANGELOG_LIVE_TABLE,

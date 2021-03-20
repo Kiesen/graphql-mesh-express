@@ -1,4 +1,4 @@
-import { LogDbChanges } from '@src/mesh/types/generated';
+import { LogDbChanges } from '@internalTypes/schema';
 import { ChangelogRowTypes } from '@db/config/changelog';
 
 export type ChangelogDBRows = Omit<ChangelogRowTypes, 'id'>[];

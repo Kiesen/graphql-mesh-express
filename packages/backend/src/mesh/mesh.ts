@@ -6,10 +6,10 @@ import { MeshPubSub } from '@graphql-mesh/types';
 import { PubSub } from 'graphql-subscriptions';
 import LRUCache from '@graphql-mesh/cache-inmemory-lru';
 import StitchingMerger from '@graphql-mesh/merger-stitching';
-// import FilterTransform from '@graphql-mesh/transform-filter-schema';
+import FilterTransform from '@graphql-mesh/transform-filter-schema';
 import CacheTransform from '@graphql-mesh/transform-cache';
-// import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
-// import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
+import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
+import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
 import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
 import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
@@ -18,25 +18,33 @@ import { mutationConfig } from '@src/rights/config';
 import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
+import { addEnvironmentPrefix } from '@util/prefix';
 
 /**
  * These mutations are going to be used also in relation to our
  * `logDB` mutation.
  */
-const mutationFieldsForSettingsChanges: readonly string[] = [
-  'updateManagerFirstName',
+const allowedEnvRelatedMutations: readonly string[] = addEnvironmentPrefix(
+  ['updateManagerFirstName']
+);
+
+const allowedMutations: readonly string[] = [
+  ...allowedEnvRelatedMutations,
+  'logDB',
 ];
 
-// const allowedMutations: readonly string[] = [
-//   ...mutationFieldsForSettingsChanges,
-//   'logDB',
-// ];
+const allowedEnvRelatedQueries: readonly string[] = addEnvironmentPrefix(
+  ['manager']
+);
 
-// const allowedQueries: readonly string[] = [
-//   'manager',
-//   'getChanges',
-//   'userRights',
-// ];
+const allowedQueries: readonly string[] = [
+  ...allowedEnvRelatedQueries,
+  'getChangelog',
+  'getChangelogDev',
+  'userRights',
+];
+
+console.log(allowedQueries);
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -106,8 +114,8 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         }),
       },
     ],
-    // additionalResolvers,
-    // additionalTypeDefs: [additionalTypeDefs],
+    additionalResolvers,
+    additionalTypeDefs: [additionalTypeDefs],
     transforms: [
       new CacheTransform({
         cache,
@@ -122,14 +130,14 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           },
         ],
       }),
-      // new FilterTransform({
-      //   cache,
-      //   pubsub,
-      //   config: [
-      //     `Mutation.{${allowedMutations.join(', ')}}`,
-      //     `Query.{${allowedQueries.join(', ')}}`,
-      //   ],
-      // }),
+      new FilterTransform({
+        cache,
+        pubsub,
+        config: [
+          `Mutation.{${allowedMutations.join(', ')}}`,
+          `Query.{${allowedQueries.join(', ')}}`,
+        ],
+      }),
       new ResolversCompositionTransform({
         cache,
         pubsub,
@@ -148,7 +156,7 @@ export const getMeshConfig = async (): Promise<{
     ReturnType<typeof getMesh>
   >['contextBuilder'];
   cache: UnwrapPromise<ReturnType<typeof getMesh>>['cache'];
-  mutationFieldsForSettingsChanges: readonly string[];
+  allowedEnvRelatedMutations: readonly string[];
 }> => {
   const { schema, contextBuilder, cache } = await getMesh(
     buildMeshConfigOptions()
@@ -158,6 +166,6 @@ export const getMeshConfig = async (): Promise<{
     schema,
     contextBuilder,
     cache,
-    mutationFieldsForSettingsChanges,
+    allowedEnvRelatedMutations,
   };
 };

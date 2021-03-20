@@ -2,7 +2,7 @@ import { MeshContext } from '@internalTypes/context';
 import {
   MutationResolvers,
   LogDbChanges,
-} from '@src/mesh/types/generated';
+} from '@internalTypes/schema';
 
 /**
  * We are just returning the input so that eventually the post-action extension,
