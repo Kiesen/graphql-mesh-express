@@ -1,3 +1,3 @@
 .vscode
 node_modules
-packages/backend/src/mesh/types/generated.ts
+packages/backend/src/types/schema.ts
