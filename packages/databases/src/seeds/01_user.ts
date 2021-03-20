@@ -1,15 +1,18 @@
 import * as Knex from 'knex';
 import faker from 'faker';
 
-import { USERS_TABLE, User } from '../config/users';
-import { CHANGES_TABLE } from '../config/changes';
+import { USER_TABLE, User } from '../config/user';
+import {
+  CHANGELOG_LIVE_TABLE,
+  CHANGELOG_DEV_TABLE,
+} from '../config/change';
 
 const createSeeds = (): User[] => {
   const numberOfSeeds = parseInt(process.env.USER_SEED_AMOUNT, 10);
 
   const seeds: User[] = [
     {
-      name: 'Max Musterman',
+      name: 'John Doe',
       uuid: '00000000-0000-0000-0000-000000000000',
     },
   ];
@@ -28,8 +31,11 @@ const createSeeds = (): User[] => {
 export async function seed(knex: Knex): Promise<void> {
   const seeds = createSeeds();
 
-  // First delete all relation user entries inside the changes table
-  await knex(CHANGES_TABLE.TABLE_NAME).del();
-  await knex(USERS_TABLE.TABLE_NAME).del();
-  await knex(USERS_TABLE.TABLE_NAME).insert(seeds);
+  // Delete relational user data (tables that use the user uuid as foreign key)
+  await knex(CHANGELOG_LIVE_TABLE.TABLE_NAME).del();
+  await knex(CHANGELOG_DEV_TABLE.TABLE_NAME).del();
+
+  // Seed the user table
+  await knex(USER_TABLE.TABLE_NAME).del();
+  await knex(USER_TABLE.TABLE_NAME).insert(seeds);
 }
