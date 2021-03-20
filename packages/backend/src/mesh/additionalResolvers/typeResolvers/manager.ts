@@ -1,5 +1,5 @@
 import { ManagerResolvers } from '@src/mesh/types/generated';
 
 export const managerResolver: ManagerResolvers = {
-  additionalInfo: (parent: any) => parent,
+  address: () => 'First Street 4, New Land, Mars',
 };

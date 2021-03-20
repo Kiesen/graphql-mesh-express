@@ -1,14 +1,7 @@
 import { LogDbChanges } from '@src/mesh/types/generated';
+import { ChangelogRowTypes } from '@db/config/changelog';
 
-export type ChangelogDBRow = {
-  memberUuid: string;
-  fieldId: string;
-  oldValue: string;
-  newValue: string;
-  comment: string;
-};
-
-export type ChangelogDBRows = ChangelogDBRow[];
+export type ChangelogDBRows = Omit<ChangelogRowTypes, 'id'>[];
 
 export type FailedChangeReport = {
   fieldId: string;

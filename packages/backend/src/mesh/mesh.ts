@@ -6,17 +6,17 @@ import { MeshPubSub } from '@graphql-mesh/types';
 import { PubSub } from 'graphql-subscriptions';
 import LRUCache from '@graphql-mesh/cache-inmemory-lru';
 import StitchingMerger from '@graphql-mesh/merger-stitching';
-import FilterTransform from '@graphql-mesh/transform-filter-schema';
+// import FilterTransform from '@graphql-mesh/transform-filter-schema';
 import CacheTransform from '@graphql-mesh/transform-cache';
-import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
-import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
+// import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
+// import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
 import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
 import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
 import { buildMutationResolverComposers } from '@src/rights/rights';
 import { mutationConfig } from '@src/rights/config';
-// import PrefixTransform from '@graphql-mesh/transform-prefix';
-import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
+import PrefixTransform from '@graphql-mesh/transform-prefix';
+import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
 
 /**
@@ -26,16 +26,17 @@ import mysqlConnection from '@db/connections/mysql';
 const mutationFieldsForSettingsChanges: readonly string[] = [
   'updateManagerFirstName',
 ];
-const allowedMutations: readonly string[] = [
-  ...mutationFieldsForSettingsChanges,
-  'logDB',
-];
 
-const allowedQueries: readonly string[] = [
-  'manager',
-  'getChanges',
-  'userRights',
-];
+// const allowedMutations: readonly string[] = [
+//   ...mutationFieldsForSettingsChanges,
+//   'logDB',
+// ];
+
+// const allowedQueries: readonly string[] = [
+//   'manager',
+//   'getChanges',
+//   'userRights',
+// ];
 
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
@@ -50,56 +51,63 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
     merger: StitchingMerger,
     sources: [
       {
-        name: 'GraphQLZero_dev',
+        name: 'GraphqlService_dev',
         handler: new GraphQLHandler({
           pubsub,
           cache,
-          name: 'GraphQLZero_dev',
+          name: 'GraphqlService_dev',
           config: {
             endpoint: Endpoints.FAKE_GRAPHQL_DEV,
             customFetch,
           },
         }),
-        // TODO:
-        // transforms: [
-        //   new PrefixTransform({
-        //     pubsub,
-        //     cache,
-        //     config: {
-        //       // TODO: Use environment
-        //       // value: Environment.Live + '_',
-        //       value: '_',
-        //       includeRootOperations: true,
-        //     },
-        //   }),
-        // ],
+        transforms: [
+          new PrefixTransform({
+            pubsub,
+            cache,
+            config: {
+              value: 'dev_',
+              includeRootOperations: true,
+            },
+          }),
+        ],
       },
-      // {
-      //   name: 'GraphQLZero_prod',
-      //   handler: new GraphQLHandler({
-      //     pubsub,
-      //     cache,
-      //     name: 'GraphQLZero_prod',
-      //     config: {
-      //       endpoint: Endpoints.FAKE_GRAPHQL_PROD,
-      //       customFetch,
-      //     },
-      //   }),
-      // },
       {
-        name: 'ChangelogDB',
+        name: 'GraphqlService_live',
+        handler: new GraphQLHandler({
+          pubsub,
+          cache,
+          name: 'GraphqlService_live',
+          config: {
+            endpoint: Endpoints.FAKE_GRAPHQL_LIVE,
+            customFetch,
+          },
+        }),
+        transforms: [
+          new PrefixTransform({
+            pubsub,
+            cache,
+            config: {
+              value: 'live_',
+              includeRootOperations: true,
+            },
+          }),
+        ],
+      },
+      {
+        name: 'InternalDB',
         handler: new MySQLHandler({
           cache,
           pubsub,
-          name: 'ChangelogDB',
+          name: 'InternalDB',
           config: {
             pool: mysqlConnection,
           },
         }),
       },
     ],
-    additionalResolvers,
-    additionalTypeDefs: [additionalTypeDefs], // Needs to be wrapped in an array
+    // additionalResolvers,
+    // additionalTypeDefs: [additionalTypeDefs],
     transforms: [
       new CacheTransform({
         cache,
@@ -114,14 +122,14 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           },
         ],
       }),
-      new FilterTransform({
-        cache,
-        pubsub,
-        config: [
-          `Mutation.{${allowedMutations.join(', ')}}`,
-          `Query.{${allowedQueries.join(', ')}}`,
-        ],
-      }),
+      // new FilterTransform({
+      //   cache,
+      //   pubsub,
+      //   config: [
+      //     `Mutation.{${allowedMutations.join(', ')}}`,
+      //     `Query.{${allowedQueries.join(', ')}}`,
+      //   ],
+      // }),
       new ResolversCompositionTransform({
         cache,
         pubsub,

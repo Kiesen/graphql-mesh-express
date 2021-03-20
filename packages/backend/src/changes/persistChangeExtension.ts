@@ -5,15 +5,19 @@ import {
 } from 'graphql';
 import get from 'lodash/get';
 import partition from 'lodash/partition';
+import { RequestInfo } from 'express-graphql';
+
 import {
   ChangelogDBRows,
   FailedChangeReports,
   LogData,
-} from '../types/changes';
-import { RequestInfo } from 'express-graphql';
-import knex from '@db/connections/knex';
-import { CHANGES_TABLE } from '@db/config/changes';
+} from '@internalTypes/changes';
 import { LogDbChangedField } from '@src/mesh/types/generated';
+import knex from '@db/connections/knex';
+import {
+  CHANGELOG_LIVE_TABLE,
+  CHANGELOG_DEV_TABLE,
+} from '@db/config/changelog';
 
 /**
  * Returns true if the change specified in `field` is reflected in `result`.
@@ -49,10 +53,11 @@ export const mapToChangelogDBRows = (
   fields: LogData['fields']
 ): ChangelogDBRows =>
   fields.map((field) => ({
-    memberUuid,
-    fieldId: field.fieldId,
-    oldValue: field.oldValue,
-    newValue: field.newValue,
+    user_uuid: memberUuid,
+    field_id: field.fieldId,
+    old_value: field.oldValue,
+    new_value: field.newValue,
+    date_of_change: new Date(),
     comment,
   }));
 
@@ -88,9 +93,7 @@ export const hasSomeMutationOperations = (
   0;
 
 export const persistChangeExtension = ({
-  document,
   result,
-  context,
 }: RequestInfo): { failedChanges?: FailedChangeReports } => {
   const logData: LogData | undefined = get(result, 'data.logDB');
   if (logData) {
@@ -101,46 +104,38 @@ export const persistChangeExtension = ({
 
     if (successfulChanges.length > 0) {
       // Depending on the environment set the corresponding table
-      // TODO: Use another table for dev
       const tableName =
         logData.environment === 'live'
-          ? CHANGES_TABLE.TABLE_NAME
-          : CHANGES_TABLE.TABLE_NAME;
+          ? CHANGELOG_LIVE_TABLE.TABLE_NAME
+          : CHANGELOG_DEV_TABLE.TABLE_NAME;
 
       const changelogs = mapToChangelogDBRows(
         logData.comment,
-        // This is a fake user which is also inserted as special seed
-        // inside the knex table config.
+        // This is a fake user which is also inserted as default
+        // seed into the uer table
         '00000000-0000-0000-0000-000000000000',
         successfulChanges
       );
 
       for (const change of changelogs) {
         knex(tableName)
-          .insert({
-            user_uuid: change.memberUuid,
-            date_of_change: new Date(),
-            new_value: change.newValue,
-            old_value: change.oldValue,
-            comment: change.comment,
-            field_id: change.fieldId,
-          })
+          .insert(change)
           .then((result) => {
             console.log(
               'Successfully inserted a change in the changelog db.',
               result
             );
           })
-          .catch((e) => {
+          .catch((error) => {
             console.error(
-              'Failed to insert a change in the changelog db',
-              e
+              'Failed to insert a change in the changelog db.',
+              error
             );
           });
       }
     }
 
-    // any failed changes will be reported back to the frontend
+    // Any failed changes will be reported back to the frontend
     const failedChangesReports = mapToFailedChangeReports(
       failedChanges
     );

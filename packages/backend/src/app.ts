@@ -9,12 +9,6 @@ import { persistChangeExtension } from '@src/changes/persistChangeExtension';
 
 const app = express();
 
-// TODO: Add persist change extension
-
-app.get('/ping', (req, res) => {
-  return res.send('pong');
-});
-
 app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
 retry(
