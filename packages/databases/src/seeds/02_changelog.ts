@@ -4,11 +4,11 @@ import faker from 'faker';
 import {
   CHANGELOG_LIVE_TABLE,
   CHANGELOG_DEV_TABLE,
-  ChangelogTypes,
-} from '../config/change';
+  ChangelogRowTypes,
+} from '../config/changelog';
 import { USER_TABLE, User } from '../config/user';
 
-type ChangelogSeed = Omit<ChangelogTypes, 'id'>;
+type ChangelogSeed = Omit<ChangelogRowTypes, 'id'>;
 
 const createSeeds = async (knex: Knex): Promise<ChangelogSeed[]> => {
   const numberOfSeeds = parseInt(process.env.CHANGES_SEED_AMOUT, 10);

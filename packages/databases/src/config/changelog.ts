@@ -1,4 +1,4 @@
-export type ChangelogTypes = {
+export type ChangelogRowTypes = {
   id: number;
   user_uuid: string;
   date_of_change: Date;
