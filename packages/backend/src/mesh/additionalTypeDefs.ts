@@ -11,8 +11,8 @@ const changedFields = /* GraphQL */ `
 const envRelatedTypeDefs = (environment: Environment): string => {
   const envWithSuffix = environment + '_';
   return /* GraphQL */ `
-    extend type ${envWithSuffix}Manager {
-    address: String!
+    extend type ${envWithSuffix}Todo {
+    comments: [String]!
   }
   `;
 };

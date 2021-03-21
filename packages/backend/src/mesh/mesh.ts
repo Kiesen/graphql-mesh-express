@@ -25,7 +25,7 @@ import { addEnvironmentPrefix } from '@util/prefix';
  * `logDB` mutation.
  */
 const allowedEnvRelatedMutations: readonly string[] = addEnvironmentPrefix(
-  ['updateManagerFirstName']
+  ['updateTodoContent']
 );
 
 const allowedMutations: readonly string[] = [
@@ -34,7 +34,7 @@ const allowedMutations: readonly string[] = [
 ];
 
 const allowedEnvRelatedQueries: readonly string[] = addEnvironmentPrefix(
-  ['manager']
+  ['todo', 'todoList']
 );
 
 const allowedQueries: readonly string[] = [

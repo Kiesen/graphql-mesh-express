@@ -1,14 +1,13 @@
-type Manager {
+type Todo {
   id: ID @fake(type: uuid)
-  firstName: String! @fake(type: firstName)
-  lastName: String! @fake(type: lastName)
-  phoneNumber: String! @fake(type: phoneNumber)
+  content: String! @fake(type: words)
 }
 
 type Query {
-  manager: Manager!
+  todoList: [Todo]!
+  todo: Todo
 }
 
 type Mutation {
-  updateManagerFirstName(firstName: String!): Manager
+  updateTodoContent(content: String!): Todo
 }

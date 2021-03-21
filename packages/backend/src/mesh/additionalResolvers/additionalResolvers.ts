@@ -1,10 +1,10 @@
 import { userRightsResolver } from '@src/mesh/additionalResolvers/queryResolvers/userRights';
-import { managerResolver } from '@src/mesh/additionalResolvers/typeResolvers/manager';
+import { todoResolver } from '@src/mesh/additionalResolvers/typeResolvers/todo';
 import { logDBResolver } from '@src/mesh/additionalResolvers/mutationResolvers/logDBResolver';
 import { Environment } from '@internalTypes/schema';
 
 export const additionalResolversWithoutEnvMapping = {
-  Manager: managerResolver,
+  Todo: todoResolver,
 };
 
 /**

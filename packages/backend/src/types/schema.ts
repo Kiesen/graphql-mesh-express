@@ -28,8 +28,10 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  dev_manager: Dev_Manager;
-  live_manager: Live_Manager;
+  dev_todoList: Array<Maybe<Dev_Todo>>;
+  dev_todo?: Maybe<Dev_Todo>;
+  live_todoList: Array<Maybe<Live_Todo>>;
+  live_todo?: Maybe<Live_Todo>;
   getChangelog?: Maybe<Array<Maybe<Changelog>>>;
   getChangelogDev?: Maybe<Array<Maybe<ChangelogDev>>>;
   userRights: Array<Scalars['String']>;
@@ -51,30 +53,28 @@ export type QueryGetChangelogDevArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  dev_updateManagerFirstName?: Maybe<Dev_Manager>;
-  live_updateManagerFirstName?: Maybe<Live_Manager>;
+  dev_updateTodoContent?: Maybe<Dev_Todo>;
+  live_updateTodoContent?: Maybe<Live_Todo>;
   logDB?: Maybe<LogDbChanges>;
 };
 
-export type MutationDev_UpdateManagerFirstNameArgs = {
-  firstName: Scalars['String'];
+export type MutationDev_UpdateTodoContentArgs = {
+  content: Scalars['String'];
 };
 
-export type MutationLive_UpdateManagerFirstNameArgs = {
-  firstName: Scalars['String'];
+export type MutationLive_UpdateTodoContentArgs = {
+  content: Scalars['String'];
 };
 
 export type MutationLogDbArgs = {
   input: LogDbChangesInput;
 };
 
-export type Dev_Manager = {
-  __typename?: 'dev_Manager';
+export type Dev_Todo = {
+  __typename?: 'dev_Todo';
   id?: Maybe<Scalars['ID']>;
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  phoneNumber: Scalars['String'];
-  address: Scalars['String'];
+  content: Scalars['String'];
+  comments: Array<Maybe<Scalars['String']>>;
 };
 
 export enum Dev_Fake__Locale {
@@ -257,13 +257,11 @@ export type Dev_Fake__Options = {
   precisionNumber?: Maybe<Scalars['Float']>;
 };
 
-export type Live_Manager = {
-  __typename?: 'live_Manager';
+export type Live_Todo = {
+  __typename?: 'live_Todo';
   id?: Maybe<Scalars['ID']>;
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  phoneNumber: Scalars['String'];
-  address: Scalars['String'];
+  content: Scalars['String'];
+  comments: Array<Maybe<Scalars['String']>>;
 };
 
 export enum Live_Fake__Locale {
@@ -846,7 +844,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Mutation: ResolverTypeWrapper<{}>;
-  dev_Manager: ResolverTypeWrapper<Dev_Manager>;
+  dev_Todo: ResolverTypeWrapper<Dev_Todo>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   dev_fake__Locale: Dev_Fake__Locale;
   dev_fake__Types: Dev_Fake__Types;
@@ -859,7 +857,7 @@ export type ResolversTypes = {
   dev_examples__JSON: ResolverTypeWrapper<
     Scalars['dev_examples__JSON']
   >;
-  live_Manager: ResolverTypeWrapper<Live_Manager>;
+  live_Todo: ResolverTypeWrapper<Live_Todo>;
   live_fake__Locale: Live_Fake__Locale;
   live_fake__Types: Live_Fake__Types;
   live_fake__imageSize: Live_Fake__ImageSize;
@@ -910,7 +908,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   String: Scalars['String'];
   Mutation: {};
-  dev_Manager: Dev_Manager;
+  dev_Todo: Dev_Todo;
   ID: Scalars['ID'];
   dev_fake__imageSize: Dev_Fake__ImageSize;
   dev_fake__color: Dev_Fake__Color;
@@ -918,7 +916,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Float: Scalars['Float'];
   dev_examples__JSON: Scalars['dev_examples__JSON'];
-  live_Manager: Live_Manager;
+  live_Todo: Live_Todo;
   live_fake__imageSize: Live_Fake__ImageSize;
   live_fake__color: Live_Fake__Color;
   live_fake__options: Live_Fake__Options;
@@ -969,13 +967,23 @@ export type QueryResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes['Query']
 > = {
-  dev_manager?: Resolver<
-    ResolversTypes['dev_Manager'],
+  dev_todoList?: Resolver<
+    Array<Maybe<ResolversTypes['dev_Todo']>>,
     ParentType,
     ContextType
   >;
-  live_manager?: Resolver<
-    ResolversTypes['live_Manager'],
+  dev_todo?: Resolver<
+    Maybe<ResolversTypes['dev_Todo']>,
+    ParentType,
+    ContextType
+  >;
+  live_todoList?: Resolver<
+    Array<Maybe<ResolversTypes['live_Todo']>>,
+    ParentType,
+    ContextType
+  >;
+  live_todo?: Resolver<
+    Maybe<ResolversTypes['live_Todo']>,
     ParentType,
     ContextType
   >;
@@ -1002,20 +1010,17 @@ export type MutationResolvers<
   ContextType = any,
   ParentType = ResolversParentTypes['Mutation']
 > = {
-  dev_updateManagerFirstName?: Resolver<
-    Maybe<ResolversTypes['dev_Manager']>,
+  dev_updateTodoContent?: Resolver<
+    Maybe<ResolversTypes['dev_Todo']>,
     ParentType,
     ContextType,
-    RequireFields<MutationDev_UpdateManagerFirstNameArgs, 'firstName'>
+    RequireFields<MutationDev_UpdateTodoContentArgs, 'content'>
   >;
-  live_updateManagerFirstName?: Resolver<
-    Maybe<ResolversTypes['live_Manager']>,
+  live_updateTodoContent?: Resolver<
+    Maybe<ResolversTypes['live_Todo']>,
     ParentType,
     ContextType,
-    RequireFields<
-      MutationLive_UpdateManagerFirstNameArgs,
-      'firstName'
-    >
+    RequireFields<MutationLive_UpdateTodoContentArgs, 'content'>
   >;
   logDB?: Resolver<
     Maybe<ResolversTypes['LogDBChanges']>,
@@ -1025,28 +1030,18 @@ export type MutationResolvers<
   >;
 };
 
-export type Dev_ManagerResolvers<
+export type Dev_TodoResolvers<
   ContextType = any,
-  ParentType = ResolversParentTypes['dev_Manager']
+  ParentType = ResolversParentTypes['dev_Todo']
 > = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  firstName?: Resolver<
+  content?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
   >;
-  lastName?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  phoneNumber?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  address?: Resolver<
-    ResolversTypes['String'],
+  comments?: Resolver<
+    Array<Maybe<ResolversTypes['String']>>,
     ParentType,
     ContextType
   >;
@@ -1061,28 +1056,18 @@ export interface Dev_Examples__JsonScalarConfig
   name: 'dev_examples__JSON';
 }
 
-export type Live_ManagerResolvers<
+export type Live_TodoResolvers<
   ContextType = any,
-  ParentType = ResolversParentTypes['live_Manager']
+  ParentType = ResolversParentTypes['live_Todo']
 > = {
   id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  firstName?: Resolver<
+  content?: Resolver<
     ResolversTypes['String'],
     ParentType,
     ContextType
   >;
-  lastName?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  phoneNumber?: Resolver<
-    ResolversTypes['String'],
-    ParentType,
-    ContextType
-  >;
-  address?: Resolver<
-    ResolversTypes['String'],
+  comments?: Resolver<
+    Array<Maybe<ResolversTypes['String']>>,
     ParentType,
     ContextType
   >;
@@ -1288,9 +1273,9 @@ export type LogDbChangedFieldResolvers<
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  dev_Manager?: Dev_ManagerResolvers<ContextType>;
+  dev_Todo?: Dev_TodoResolvers<ContextType>;
   dev_examples__JSON?: GraphQLScalarType;
-  live_Manager?: Live_ManagerResolvers<ContextType>;
+  live_Todo?: Live_TodoResolvers<ContextType>;
   live_examples__JSON?: GraphQLScalarType;
   Changelog?: ChangelogResolvers<ContextType>;
   BigInt?: GraphQLScalarType;

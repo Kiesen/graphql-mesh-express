@@ -1,8 +1,8 @@
 # This mutation is supposed to fail because there is no
-# corresponding `logDB` mutation submitted alongside the `updateManagerFirstName`
+# corresponding `logDB` mutation submitted alongside the `updateTodoContent`
 mutation MutationTryInvalid {
-  updateManagerFirstName(firstName: "newFirstName") {
-    firstName
-    lastName
+  live_updateTodoContent(content: "New content") {
+    id
+    content
   }
 }
