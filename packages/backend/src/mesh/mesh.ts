@@ -44,8 +44,6 @@ const allowedQueries: readonly string[] = [
   'userRights',
 ];
 
-console.log(allowedQueries);
-
 export const buildMeshConfigOptions = (): GetMeshOptions => {
   const cache = new LRUCache();
   /**
@@ -156,7 +154,7 @@ export const getMeshConfig = async (): Promise<{
     ReturnType<typeof getMesh>
   >['contextBuilder'];
   cache: UnwrapPromise<ReturnType<typeof getMesh>>['cache'];
-  allowedEnvRelatedMutations: readonly string[];
+  allowedMutations: readonly string[];
 }> => {
   const { schema, contextBuilder, cache } = await getMesh(
     buildMeshConfigOptions()
@@ -166,6 +164,6 @@ export const getMeshConfig = async (): Promise<{
     schema,
     contextBuilder,
     cache,
-    allowedEnvRelatedMutations,
+    allowedMutations,
   };
 };
