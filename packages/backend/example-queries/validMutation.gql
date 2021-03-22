@@ -2,21 +2,21 @@
 # The purpose of the logDB is to submit further information alongside a mutation
 # This further information is logged into DB if the mutation has succeeded
 mutation MutationTryValid {
-  updateManagerFirstName(firstName: "newFirstName") {
-    firstName
-    lastName
+  live_updateTodoContent(content: "new content") {
+    id
+    content
   }
 
   logDB(
     input: {
-      comment: "Testing the update of a manager's first name"
+      comment: "Testing the update of a todo item"
       environment: live
       fields: [
         {
-          fieldId: "Manager's first name"
-          oldValue: "\"oldFirstName\""
-          newValue: "\"newFirstName\""
-          path: "updateManagerFirstName.firstName"
+          fieldId: "todo content"
+          oldValue: "\"old content\""
+          newValue: "\"new content\""
+          path: "live_updateTodoContent.content"
         }
       ]
     }

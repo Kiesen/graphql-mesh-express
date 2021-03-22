@@ -3,7 +3,7 @@ export type User = {
   name: string;
 };
 
-export const USERS_TABLE = {
+export const USER_TABLE = {
   TABLE_NAME: 'user',
   COLUMN_NAMES: {
     UUID: 'uuid',

@@ -1,7 +1,29 @@
-import { logDBResolver } from './mutationResolvers/logDBResolver';
-import { userRightsResolver } from './queryResolvers/userRights';
-import { additionalManagerInfoResolver } from './typeResolvers/additionalManagerInfo';
-import { managerResolver } from './typeResolvers/manager';
+import { userRightsResolver } from '@src/mesh/additionalResolvers/queryResolvers/userRights';
+import { todoResolver } from '@src/mesh/additionalResolvers/typeResolvers/todo';
+import { logDBResolver } from '@src/mesh/additionalResolvers/mutationResolvers/logDBResolver';
+import { Environment } from '@internalTypes/schema';
+
+export const additionalResolversWithoutEnvMapping = {
+  Todo: todoResolver,
+};
+
+/**
+ * Creates a map with a environment related mapping
+ * of environment related resolvers.
+ */
+export const createEnvRelatedResolverMapping = (
+  envs: Environment[],
+  resolverMap: Record<string, unknown>
+): Record<string, typeof resolverMap> =>
+  Object.keys(resolverMap).reduce((acc, curr) => {
+    for (const env of envs) {
+      acc = {
+        ...acc,
+        [`${env}_${curr}`]: resolverMap[curr],
+      };
+    }
+    return acc;
+  }, {});
 
 /**
  *  If you would like to update types use
@@ -17,8 +39,10 @@ const additionalResolvers = {
   Query: {
     userRights: userRightsResolver,
   },
-  Manager: managerResolver,
-  AdditionalManagerInfo: additionalManagerInfoResolver,
+  ...createEnvRelatedResolverMapping(
+    Object.values(Environment),
+    additionalResolversWithoutEnvMapping
+  ),
 };
 
 export { additionalResolvers };

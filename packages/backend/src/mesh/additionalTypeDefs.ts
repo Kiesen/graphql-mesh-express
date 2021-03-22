@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { Environment } from '@internalTypes/schema';
 
 const changedFields = /* GraphQL */ `
     fieldId: String!
@@ -7,6 +8,15 @@ const changedFields = /* GraphQL */ `
     path: String!
 `;
 
+const envRelatedTypeDefs = (environment: Environment): string => {
+  const envWithSuffix = environment + '_';
+  return /* GraphQL */ `
+    extend type ${envWithSuffix}Todo {
+    comments: [String]!
+  }
+  `;
+};
+
 export const additionalTypeDefs = gql`
   extend type Query {
     userRights: [String!]!
@@ -14,12 +24,6 @@ export const additionalTypeDefs = gql`
 
   extend type Mutation {
     logDB(input: LogDBChangesInput!): LogDBChanges
-  }
-
-  input LogDBChangesInput {
-    comment: String!
-    fields: [LogDBChangedFieldInput!]!
-    environment: Environment!
   }
 
   type LogDBChanges {
@@ -36,16 +40,18 @@ export const additionalTypeDefs = gql`
     ${changedFields}
   }
 
-  extend type Manager {
-    additionalInfo: AdditionalManagerInfo!
-  }
-
-  type AdditionalManagerInfo {
-    address: String!
-  }
+  input LogDBChangesInput {
+    comment: String!
+    fields: [LogDBChangedFieldInput!]!
+    environment: Environment!
+  }  
 
   enum Environment {
     live
     dev
   }
+
+  ${envRelatedTypeDefs(Environment.Dev)}
+
+  ${envRelatedTypeDefs(Environment.Live)}
 `;

@@ -1,6 +1,7 @@
 import { ResolversComposition } from '@graphql-tools/resolvers-composition';
-import { MeshContext } from '@internalTypes/context';
 import { GraphQLFieldResolver } from 'graphql';
+
+import { MeshContext } from '@internalTypes/context';
 import { MutationConfig } from '@src/rights/config';
 
 type ResolverComposer = ResolversComposition<

@@ -15,25 +15,32 @@ import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
 import { buildMutationResolverComposers } from '@src/rights/rights';
 import { mutationConfig } from '@src/rights/config';
-// import PrefixTransform from '@graphql-mesh/transform-prefix';
-import { UnwrapPromise } from '@internalTypes/UnwrapPromise';
+import PrefixTransform from '@graphql-mesh/transform-prefix';
+import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
+import { addEnvironmentPrefix } from '@util/prefix';
 
 /**
  * These mutations are going to be used also in relation to our
  * `logDB` mutation.
  */
-const mutationFieldsForSettingsChanges: readonly string[] = [
-  'updateManagerFirstName',
-];
+const allowedEnvRelatedMutations: readonly string[] = addEnvironmentPrefix(
+  ['updateTodoContent']
+);
+
 const allowedMutations: readonly string[] = [
-  ...mutationFieldsForSettingsChanges,
+  ...allowedEnvRelatedMutations,
   'logDB',
 ];
 
+const allowedEnvRelatedQueries: readonly string[] = addEnvironmentPrefix(
+  ['todo', 'todoList']
+);
+
 const allowedQueries: readonly string[] = [
-  'manager',
-  'getChanges',
+  ...allowedEnvRelatedQueries,
+  'getChangelog',
+  'getChangelogDev',
   'userRights',
 ];
 
@@ -50,48 +57,55 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
     merger: StitchingMerger,
     sources: [
       {
-        name: 'GraphQLZero_dev',
+        name: 'GraphqlService_dev',
         handler: new GraphQLHandler({
           pubsub,
           cache,
-          name: 'GraphQLZero_dev',
+          name: 'GraphqlService_dev',
           config: {
             endpoint: Endpoints.FAKE_GRAPHQL_DEV,
             customFetch,
           },
         }),
-        // TODO:
-        // transforms: [
-        //   new PrefixTransform({
-        //     pubsub,
-        //     cache,
-        //     config: {
-        //       // TODO: Use environment
-        //       // value: Environment.Live + '_',
-        //       value: '_',
-        //       includeRootOperations: true,
-        //     },
-        //   }),
-        // ],
+        transforms: [
+          new PrefixTransform({
+            pubsub,
+            cache,
+            config: {
+              value: 'dev_',
+              includeRootOperations: true,
+            },
+          }),
+        ],
       },
-      // {
-      //   name: 'GraphQLZero_prod',
-      //   handler: new GraphQLHandler({
-      //     pubsub,
-      //     cache,
-      //     name: 'GraphQLZero_prod',
-      //     config: {
-      //       endpoint: Endpoints.FAKE_GRAPHQL_PROD,
-      //       customFetch,
-      //     },
-      //   }),
-      // },
       {
-        name: 'ChangelogDB',
+        name: 'GraphqlService_live',
+        handler: new GraphQLHandler({
+          pubsub,
+          cache,
+          name: 'GraphqlService_live',
+          config: {
+            endpoint: Endpoints.FAKE_GRAPHQL_LIVE,
+            customFetch,
+          },
+        }),
+        transforms: [
+          new PrefixTransform({
+            pubsub,
+            cache,
+            config: {
+              value: 'live_',
+              includeRootOperations: true,
+            },
+          }),
+        ],
+      },
+      {
+        name: 'InternalDB',
         handler: new MySQLHandler({
           cache,
           pubsub,
-          name: 'ChangelogDB',
+          name: 'InternalDB',
           config: {
             pool: mysqlConnection,
           },
@@ -99,7 +113,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       },
     ],
     additionalResolvers,
-    additionalTypeDefs: [additionalTypeDefs], // Needs to be wrapped in an array
+    additionalTypeDefs: [additionalTypeDefs],
     transforms: [
       new CacheTransform({
         cache,
@@ -140,7 +154,7 @@ export const getMeshConfig = async (): Promise<{
     ReturnType<typeof getMesh>
   >['contextBuilder'];
   cache: UnwrapPromise<ReturnType<typeof getMesh>>['cache'];
-  mutationFieldsForSettingsChanges: readonly string[];
+  allowedMutations: readonly string[];
 }> => {
   const { schema, contextBuilder, cache } = await getMesh(
     buildMeshConfigOptions()
@@ -150,6 +164,6 @@ export const getMeshConfig = async (): Promise<{
     schema,
     contextBuilder,
     cache,
-    mutationFieldsForSettingsChanges,
+    allowedMutations,
   };
 };

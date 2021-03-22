@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 import dotenv from 'dotenv';
 
-// Get the path to project root
+// Get path to .env file which is located in the project root dir
 const envPath = `${process.cwd().split('packages')[0]}.env`;
 dotenv.config({ path: envPath });
 

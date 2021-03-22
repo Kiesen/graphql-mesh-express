@@ -11,6 +11,7 @@
     "bootstrap": "lerna bootstrap",
     "clean": "lerna clean",
     "postinstall": "husky install",
+    "backend:generate:types": "cd packages/backend && npm run graphql:generate:types",
     "db:initialize": "cd packages/databases && npm run initialize",
     "db:seed:make": "cd packages/databases && npm run seed:make",
     "db:seed:run": "cd packages/databases && npm run seed:run",

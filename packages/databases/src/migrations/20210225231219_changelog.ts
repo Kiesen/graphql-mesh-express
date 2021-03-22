@@ -1,10 +1,10 @@
 import * as Knex from 'knex';
-import { CHANGES_TABLE } from '../config/changes';
+import { CHANGELOG_LIVE_TABLE } from '../config/changelog';
 
-import { USERS_TABLE } from '../config/users';
+import { USER_TABLE } from '../config/user';
 
 export async function up(knex: Knex): Promise<void> {
-  const { TABLE_NAME, COLUMN_NAMES } = CHANGES_TABLE;
+  const { TABLE_NAME, COLUMN_NAMES } = CHANGELOG_LIVE_TABLE;
   return knex.schema.createTable(TABLE_NAME, (table) => {
     table.bigIncrements(COLUMN_NAMES.ID).notNullable().unique();
     table.timestamp(COLUMN_NAMES.DATE_OF_CHANGE).notNullable();
@@ -14,13 +14,13 @@ export async function up(knex: Knex): Promise<void> {
     table.text(COLUMN_NAMES.COMMENT).notNullable();
     table
       .uuid(COLUMN_NAMES.USER_UUID)
-      .references(USERS_TABLE.COLUMN_NAMES.UUID)
-      .inTable(USERS_TABLE.TABLE_NAME)
+      .references(USER_TABLE.COLUMN_NAMES.UUID)
+      .inTable(USER_TABLE.TABLE_NAME)
       .index();
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  const { TABLE_NAME } = CHANGES_TABLE;
+  const { TABLE_NAME } = CHANGELOG_LIVE_TABLE;
   return knex.schema.dropTable(TABLE_NAME);
 }

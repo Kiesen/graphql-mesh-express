@@ -9,12 +9,6 @@ import { persistChangeExtension } from '@src/changes/persistChangeExtension';
 
 const app = express();
 
-// TODO: Add persist change extension
-
-app.get('/ping', (req, res) => {
-  return res.send('pong');
-});
-
 app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
 retry(
@@ -34,41 +28,32 @@ retry(
     retryOnReject: true,
   }
 )
-  .then(
-    ({
-      schema,
-      contextBuilder,
-      cache,
-      mutationFieldsForSettingsChanges,
-    }) => {
-      console.log('GraphQL Mesh Schema has been successfully built');
+  .then(({ schema, contextBuilder, cache, allowedMutations }) => {
+    console.log('GraphQL Mesh Schema has been successfully built');
 
-      const extensions = (
-        info: graphqlHTTP.RequestInfo
-      ): { [key: string]: unknown } => ({
-        ...persistChangeExtension(info),
-      });
+    const extensions = (
+      info: graphqlHTTP.RequestInfo
+    ): { [key: string]: unknown } => ({
+      ...persistChangeExtension(info),
+    });
 
-      app.use(
-        '/graphql',
-        getUserRights,
-        graphqlHTTP(async (req, res) => ({
+    app.use(
+      '/graphql',
+      getUserRights,
+      graphqlHTTP(async (req, res) => ({
+        schema,
+        context: await contextBuilder({
+          req,
+          res,
+          cache,
           schema,
-          context: await contextBuilder({
-            req,
-            res,
-            cache,
-            schema,
-          }),
-          graphiql: true,
-          extensions,
-          validationRules: [
-            logDBMutationValidation(mutationFieldsForSettingsChanges),
-          ],
-        }))
-      );
-    }
-  )
+        }),
+        graphiql: true,
+        extensions,
+        validationRules: [logDBMutationValidation(allowedMutations)],
+      }))
+    );
+  })
   .catch((error: Error) => {
     console.error('GraphQL Mesh failed to build. Error: %s', error);
   });
