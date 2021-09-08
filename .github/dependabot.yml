@@ -1,0 +1,10 @@
+version: 2
+
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    allow:
+      # Allow updates for @graphql-mesh related packages
+      - dependency-name: '@graphql-mesh/*'
