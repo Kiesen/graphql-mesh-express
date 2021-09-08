@@ -19,6 +19,11 @@ import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
 import { addEnvironmentPrefix } from '@util/prefix';
+import { DefaultLogger } from '@graphql-mesh/utils';
+import {
+  InMemoryStoreStorageAdapter,
+  MeshStore,
+} from '@graphql-mesh/store';
 
 /**
  * These mutations are going to be used also in relation to our
@@ -51,14 +56,50 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
    * is required from the types to create an instance of pubsub
    */
   const pubsub = new PubSub() as MeshPubSub;
+
+  const logger = new DefaultLogger('TEST');
+
+  /**
+   * TODO: I am not 100% sure what the store does?
+   * I think the store replaces the Introspection Cache which was used to fetch schemas.
+   * Now the schemas are contained in a store. But probably a better way of using it is to use the GQL Build Artifacts.
+   * https://github.com/Urigo/graphql-mesh/blob/master/website/docs/recipes/build-mesh-artifacts.md#why-you-should-build-mesh-artifacts
+   */
+  const store = new MeshStore(
+    '.mesh',
+    new InMemoryStoreStorageAdapter(),
+    {
+      readonly: false,
+      validate: false,
+    }
+  );
+
+  // TODO: I believe these properties do not do anything but they satisfy the types
+  // of the corresponding transforms / input source modules
+  const apiName = '';
+  const baseDir: string = (undefined as unknown) as any;
+  /* eslint-disable @typescript-eslint/no-empty-function */
+  const syncImportFn = (() => {}) as any;
+
+  const importFn = undefined as any;
+
   return {
     pubsub,
     cache,
-    merger: StitchingMerger,
+    merger: new StitchingMerger({
+      cache,
+      logger,
+      pubsub,
+      store,
+    }),
     sources: [
       {
         name: 'GraphqlService_dev',
         handler: new GraphQLHandler({
+          store,
+          importFn,
+          logger,
+          baseDir,
           pubsub,
           cache,
           name: 'GraphqlService_dev',
@@ -69,6 +110,9 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         }),
         transforms: [
           new PrefixTransform({
+            apiName,
+            syncImportFn,
+            baseDir,
             pubsub,
             cache,
             config: {
@@ -81,6 +125,10 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       {
         name: 'GraphqlService_live',
         handler: new GraphQLHandler({
+          store,
+          importFn,
+          logger,
+          baseDir,
           pubsub,
           cache,
           name: 'GraphqlService_live',
@@ -91,6 +139,9 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         }),
         transforms: [
           new PrefixTransform({
+            apiName,
+            syncImportFn,
+            baseDir,
             pubsub,
             cache,
             config: {
@@ -103,6 +154,10 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       {
         name: 'InternalDB',
         handler: new MySQLHandler({
+          store,
+          importFn,
+          logger,
+          baseDir,
           cache,
           pubsub,
           name: 'InternalDB',
@@ -116,6 +171,9 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
     additionalTypeDefs: [additionalTypeDefs],
     transforms: [
       new CacheTransform({
+        apiName,
+        baseDir,
+        syncImportFn,
         cache,
         pubsub,
         config: [
@@ -128,7 +186,10 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           },
         ],
       }),
-      new FilterTransform({
+      FilterTransform({
+        apiName,
+        baseDir,
+        syncImportFn,
         cache,
         pubsub,
         config: [
@@ -137,6 +198,9 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         ],
       }),
       new ResolversCompositionTransform({
+        apiName,
+        baseDir,
+        syncImportFn,
         cache,
         pubsub,
         config: [
