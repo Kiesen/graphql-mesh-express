@@ -6,15 +6,10 @@ import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import { retry } from '@util/retry';
 import { logDBMutationValidation } from '@src/validation/logDBMutationValidation';
 import { persistChangeExtension } from '@src/changes/persistChangeExtension';
-import { join } from 'path';
 
 const app = express();
 
 app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
-
-app.get('/fakerSchema.graphql', (req, res) => {
-  res.sendFile(join(__dirname, './fakerSchema.graphql'));
-});
 
 retry(
   getMeshConfig,

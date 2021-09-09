@@ -1,5 +1,5 @@
 import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
-import { getIntrospectionQuery, GraphQLSchema } from 'graphql';
+import { GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
 import MySQLHandler from '@graphql-mesh/mysql';
 import { MeshPubSub } from '@graphql-mesh/types';
@@ -43,7 +43,7 @@ const allowedEnvRelatedQueries: readonly string[] = [
   'dev.todoList',
 ];
 
-const allowedQueries: readonly string[] = [
+export const allowedQueries: readonly string[] = [
   ...allowedEnvRelatedQueries,
   'getChangelog',
   'getChangelogDev',
@@ -105,7 +105,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           cache,
           name: 'GraphqlService_dev',
           config: {
-            introspection: `http://localhost:4848/fakerSchema.graphql`,
+            introspection: `http://localhost:4000/sameSchema.graphql`,
             endpoint: `http://localhost:4000/graphql`,
             customFetch,
           },
@@ -126,19 +126,6 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
             },
           }),
         ],
-        // transforms: [
-        //   new PrefixTransform({
-        //     apiName,
-        //     syncImportFn,
-        //     baseDir,
-        //     pubsub,
-        //     cache,
-        //     config: {
-        //       value: 'dev_',
-        //       includeRootOperations: true,
-        //     },
-        //   }),
-        // ],
       },
       {
         name: 'GraphqlService_live',
@@ -151,7 +138,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           cache,
           name: 'GraphqlService_live',
           config: {
-            introspection: `http://localhost:4848/fakerSchema.graphql`,
+            introspection: `http://localhost:4000/sameSchema.graphql`,
             endpoint: `http://localhost:5000/graphql`,
             customFetch,
           },
@@ -172,19 +159,6 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
             },
           }),
         ],
-        // transforms: [
-        //   new PrefixTransform({
-        //     apiName,
-        //     syncImportFn,
-        //     baseDir,
-        //     pubsub,
-        //     cache,
-        //     config: {
-        //       value: 'live_',
-        //       includeRootOperations: true,
-        //     },
-        //   }),
-        // ],
       },
       {
         name: 'InternalDB',
