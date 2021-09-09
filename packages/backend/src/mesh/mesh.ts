@@ -1,5 +1,5 @@
 import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
-import { GraphQLSchema } from 'graphql';
+import { getIntrospectionQuery, GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
 import MySQLHandler from '@graphql-mesh/mysql';
 import { MeshPubSub } from '@graphql-mesh/types';
@@ -11,15 +11,16 @@ import CacheTransform from '@graphql-mesh/transform-cache';
 import { additionalResolvers } from '@src/mesh/additionalResolvers/additionalResolvers';
 import { additionalTypeDefs } from '@src/mesh/additionalTypeDefs';
 import ResolversCompositionTransform from '@graphql-mesh/transform-resolvers-composition';
-import { Endpoints } from '@src/config/Endpoints';
+// import { Endpoints } from '@src/config/Endpoints';
 import { customFetch } from '@src/mesh/customFetch/Fetch';
 import { buildMutationResolverComposers } from '@src/rights/rights';
 import { mutationConfig } from '@src/rights/config';
-import PrefixTransform from '@graphql-mesh/transform-prefix';
+// import PrefixTransform from '@graphql-mesh/transform-prefix';
 import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
-import { addEnvironmentPrefix } from '@util/prefix';
+// import { addEnvironmentPrefix } from '@util/prefix';
 import { DefaultLogger } from '@graphql-mesh/utils';
+import EncapsulateTransform from '@graphql-mesh/transform-encapsulate';
 import {
   InMemoryStoreStorageAdapter,
   MeshStore,
@@ -29,18 +30,18 @@ import {
  * These mutations are going to be used also in relation to our
  * `logDB` mutation.
  */
-const allowedEnvRelatedMutations: readonly string[] = addEnvironmentPrefix(
-  ['updateTodoContent']
-);
-
+const allowedEnvRelatedMutations: readonly string[] = [
+  'updateTodoContent',
+];
 const allowedMutations: readonly string[] = [
   ...allowedEnvRelatedMutations,
   'logDB',
 ];
 
-const allowedEnvRelatedQueries: readonly string[] = addEnvironmentPrefix(
-  ['todo', 'todoList']
-);
+const allowedEnvRelatedQueries: readonly string[] = [
+  'dev.todo',
+  'dev.todoList',
+];
 
 const allowedQueries: readonly string[] = [
   ...allowedEnvRelatedQueries,
@@ -104,23 +105,40 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           cache,
           name: 'GraphqlService_dev',
           config: {
-            endpoint: Endpoints.FAKE_GRAPHQL_DEV,
+            introspection: `http://localhost:4848/fakerSchema.graphql`,
+            endpoint: `http://localhost:4000/graphql`,
             customFetch,
           },
         }),
         transforms: [
-          new PrefixTransform({
+          new EncapsulateTransform({
             apiName,
-            syncImportFn,
             baseDir,
-            pubsub,
             cache,
+            pubsub,
+            syncImportFn,
             config: {
-              value: 'dev_',
-              includeRootOperations: true,
+              applyTo: {
+                query: true,
+                mutation: true,
+              },
+              name: 'dev',
             },
           }),
         ],
+        // transforms: [
+        //   new PrefixTransform({
+        //     apiName,
+        //     syncImportFn,
+        //     baseDir,
+        //     pubsub,
+        //     cache,
+        //     config: {
+        //       value: 'dev_',
+        //       includeRootOperations: true,
+        //     },
+        //   }),
+        // ],
       },
       {
         name: 'GraphqlService_live',
@@ -133,23 +151,40 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           cache,
           name: 'GraphqlService_live',
           config: {
-            endpoint: Endpoints.FAKE_GRAPHQL_LIVE,
+            introspection: `http://localhost:4848/fakerSchema.graphql`,
+            endpoint: `http://localhost:5000/graphql`,
             customFetch,
           },
         }),
         transforms: [
-          new PrefixTransform({
+          new EncapsulateTransform({
             apiName,
-            syncImportFn,
             baseDir,
-            pubsub,
             cache,
+            pubsub,
+            syncImportFn,
             config: {
-              value: 'live_',
-              includeRootOperations: true,
+              applyTo: {
+                query: true,
+                mutation: true,
+              },
+              name: 'live',
             },
           }),
         ],
+        // transforms: [
+        //   new PrefixTransform({
+        //     apiName,
+        //     syncImportFn,
+        //     baseDir,
+        //     pubsub,
+        //     cache,
+        //     config: {
+        //       value: 'live_',
+        //       includeRootOperations: true,
+        //     },
+        //   }),
+        // ],
       },
       {
         name: 'InternalDB',
@@ -194,7 +229,8 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         pubsub,
         config: [
           `Mutation.{${allowedMutations.join(', ')}}`,
-          `Query.{${allowedQueries.join(', ')}}`,
+          `Query.{dev, live}`,
+          'dev.todo',
         ],
       }),
       new ResolversCompositionTransform({

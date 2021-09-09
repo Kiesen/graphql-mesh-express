@@ -8,7 +8,9 @@ const changedFields = /* GraphQL */ `
     path: String!
 `;
 
-const envRelatedTypeDefs = (environment: Environment): string => {
+export const envRelatedTypeDefs = (
+  environment: Environment
+): string => {
   const envWithSuffix = environment + '_';
   return /* GraphQL */ `
     extend type ${envWithSuffix}Todo {
@@ -51,7 +53,7 @@ export const additionalTypeDefs = gql`
     dev
   }
 
-  ${envRelatedTypeDefs(Environment.Dev)}
-
-  ${envRelatedTypeDefs(Environment.Live)}
+  extend type Todo {
+    comments: [String]!
+  }
 `;

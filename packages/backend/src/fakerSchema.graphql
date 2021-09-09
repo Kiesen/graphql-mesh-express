@@ -1,0 +1,13 @@
+type Todo {
+  id: ID!
+  content: String!
+}
+
+type Query {
+  todoList: [Todo]!
+  todo: Todo
+}
+
+type Mutation {
+  updateTodoContent(content: String!): Todo
+}

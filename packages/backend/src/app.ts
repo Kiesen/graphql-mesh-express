@@ -6,10 +6,15 @@ import { express as voyagerMiddleware } from 'graphql-voyager/middleware';
 import { retry } from '@util/retry';
 import { logDBMutationValidation } from '@src/validation/logDBMutationValidation';
 import { persistChangeExtension } from '@src/changes/persistChangeExtension';
+import { join } from 'path';
 
 const app = express();
 
 app.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
+
+app.get('/fakerSchema.graphql', (req, res) => {
+  res.sendFile(join(__dirname, './fakerSchema.graphql'));
+});
 
 retry(
   getMeshConfig,
@@ -18,6 +23,7 @@ retry(
     console.error(
       `Error during GraphQL Mesh Schema creation: "${error}". Scheduled retry number ${count} in ${delay} seconds.`
     );
+    console.error(error.stack);
     // TODO: Get where errors are coming from
   },
   {

@@ -39,10 +39,7 @@ const additionalResolvers = {
   Query: {
     userRights: userRightsResolver,
   },
-  ...createEnvRelatedResolverMapping(
-    Object.values(Environment),
-    additionalResolversWithoutEnvMapping
-  ),
+  Todo: todoResolver,
 };
 
 export { additionalResolvers };
