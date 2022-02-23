@@ -2,8 +2,7 @@ import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
 import { GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
 import MySQLHandler from '@graphql-mesh/mysql';
-import { MeshPubSub } from '@graphql-mesh/types';
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub } from '@graphql-mesh/utils';
 import LRUCache from '@graphql-mesh/cache-inmemory-lru';
 import StitchingMerger from '@graphql-mesh/merger-stitching';
 import FilterTransform from '@graphql-mesh/transform-filter-schema';
@@ -56,7 +55,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
    * We do not use the GraphQL Subscriptions but it
    * is required from the types to create an instance of pubsub
    */
-  const pubsub = new PubSub() as MeshPubSub;
+  const pubsub = new PubSub();
 
   const logger = new DefaultLogger('TEST');
 
@@ -79,8 +78,6 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
   // of the corresponding transforms / input source modules
   const apiName = '';
   const baseDir: string = (undefined as unknown) as any;
-  /* eslint-disable @typescript-eslint/no-empty-function */
-  const syncImportFn = (() => {}) as any;
 
   const importFn = undefined as any;
 
@@ -116,7 +113,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
             baseDir,
             cache,
             pubsub,
-            syncImportFn,
+            importFn,
             config: {
               applyTo: {
                 query: true,
@@ -149,7 +146,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
             baseDir,
             cache,
             pubsub,
-            syncImportFn,
+            importFn,
             config: {
               applyTo: {
                 query: true,
@@ -182,7 +179,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       new CacheTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
@@ -198,7 +195,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       FilterTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
@@ -210,7 +207,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       new ResolversCompositionTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
