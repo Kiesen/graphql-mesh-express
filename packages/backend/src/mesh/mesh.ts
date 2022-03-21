@@ -108,45 +108,21 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
           },
         }),
         transforms: [
-          new PrefixTransform({
+          new CacheTransform({
             apiName,
-            importFn,
             baseDir,
-            pubsub,
-            cache,
-            config: {
-              value: 'dev_',
-              includeRootOperations: true,
-            },
-          }),
-        ],
-      },
-      {
-        name: 'GraphqlService_live',
-        handler: new GraphQLHandler({
-          store,
-          importFn,
-          logger,
-          baseDir,
-          pubsub,
-          cache,
-          name: 'GraphqlService_live',
-          config: {
-            endpoint: Endpoints.FAKE_GRAPHQL_LIVE,
-            customFetch,
-          },
-        }),
-        transforms: [
-          new PrefixTransform({
-            apiName,
             importFn,
-            baseDir,
-            pubsub,
             cache,
-            config: {
-              value: 'live_',
-              includeRootOperations: true,
-            },
+            pubsub,
+            config: [
+              {
+                field: 'Query.todoList',
+                cacheKey: 'todo_list',
+                invalidate: {
+                  ttl: 1 * 60, // invalidate every 1 minute
+                },
+              },
+            ],
           }),
         ],
       },

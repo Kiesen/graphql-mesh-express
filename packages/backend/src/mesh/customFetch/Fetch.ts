@@ -12,6 +12,7 @@ export const customFetch = async (
       Authorization: `Bearer ${process.env.SOME_SECRET}`,
     },
   }).then(async (res) => {
+    console.log('Requesting. Cache MISS');
     if (res.status === 200) {
       // return the response to GraphQL Mesh
       return res;

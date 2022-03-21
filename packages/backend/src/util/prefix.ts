@@ -7,10 +7,9 @@ import { Environment } from '@internalTypes/schema';
 export const addEnvironmentPrefix = (values: string[]): string[] => {
   let result: string[] = [];
   for (const entry of values) {
+    // TODO: Temporary disable environment
     result = result.concat(
-      Object.values(Environment).map(
-        (environment) => `${environment}_${entry}`
-      )
+      Object.values(Environment).map((environment) => `${entry}`)
     );
   }
   return result;
