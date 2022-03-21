@@ -1,4 +1,3 @@
-import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
 import { GraphQLSchema } from 'graphql';
 import GraphQLHandler from '@graphql-mesh/graphql';
 import MySQLHandler from '@graphql-mesh/mysql';
@@ -20,6 +19,8 @@ import { UnwrapPromise } from '@internalTypes/promise';
 import mysqlConnection from '@db/connections/mysql';
 import { addEnvironmentPrefix } from '@util/prefix';
 import { DefaultLogger } from '@graphql-mesh/utils';
+import { getMesh, GetMeshOptions } from '@graphql-mesh/runtime';
+
 import {
   InMemoryStoreStorageAdapter,
   MeshStore,
@@ -55,7 +56,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
    * We do not use the GraphQL Subscriptions but it
    * is required from the types to create an instance of pubsub
    */
-  const pubsub = new PubSub() as MeshPubSub;
+  const pubsub = (new PubSub() as unknown) as MeshPubSub;
 
   const logger = new DefaultLogger('TEST');
 
@@ -79,9 +80,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
   const apiName = '';
   const baseDir: string = (undefined as unknown) as any;
   /* eslint-disable @typescript-eslint/no-empty-function */
-  const syncImportFn = (() => {}) as any;
-
-  const importFn = undefined as any;
+  const importFn = (() => {}) as any;
 
   return {
     pubsub,
@@ -111,7 +110,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         transforms: [
           new PrefixTransform({
             apiName,
-            syncImportFn,
+            importFn,
             baseDir,
             pubsub,
             cache,
@@ -140,7 +139,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
         transforms: [
           new PrefixTransform({
             apiName,
-            syncImportFn,
+            importFn,
             baseDir,
             pubsub,
             cache,
@@ -173,7 +172,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       new CacheTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
@@ -189,7 +188,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       FilterTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
@@ -200,7 +199,7 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
       new ResolversCompositionTransform({
         apiName,
         baseDir,
-        syncImportFn,
+        importFn,
         cache,
         pubsub,
         config: [
@@ -214,19 +213,17 @@ export const buildMeshConfigOptions = (): GetMeshOptions => {
 
 export const getMeshConfig = async (): Promise<{
   schema: GraphQLSchema;
-  contextBuilder: UnwrapPromise<
-    ReturnType<typeof getMesh>
-  >['contextBuilder'];
+  meshContext: Record<string, unknown>;
   cache: UnwrapPromise<ReturnType<typeof getMesh>>['cache'];
   allowedMutations: readonly string[];
 }> => {
-  const { schema, contextBuilder, cache } = await getMesh(
+  const { schema, meshContext, cache } = await getMesh(
     buildMeshConfigOptions()
   );
 
   return {
     schema,
-    contextBuilder,
+    meshContext,
     cache,
     allowedMutations,
   };
