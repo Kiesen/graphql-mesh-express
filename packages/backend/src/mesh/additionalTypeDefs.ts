@@ -9,11 +9,12 @@ const changedFields = /* GraphQL */ `
 `;
 
 const envRelatedTypeDefs = (environment: Environment): string => {
-  const envWithSuffix = environment + '_';
+  // TODO: Temporary disable environment
+  // const envWithSuffix = environment + '_';
   return /* GraphQL */ `
-    extend type ${envWithSuffix}Todo {
-    comments: [String]!
-  }
+    extend type Todo {
+      comments: [String]!
+    }
   `;
 };
 

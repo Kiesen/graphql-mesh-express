@@ -17,9 +17,10 @@ export const createEnvRelatedResolverMapping = (
 ): Record<string, typeof resolverMap> =>
   Object.keys(resolverMap).reduce((acc, curr) => {
     for (const env of envs) {
+      // TODO: Temporary disable environment
       acc = {
         ...acc,
-        [`${env}_${curr}`]: resolverMap[curr],
+        [curr]: resolverMap[curr],
       };
     }
     return acc;

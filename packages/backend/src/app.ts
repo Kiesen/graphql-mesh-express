@@ -28,7 +28,7 @@ retry(
     retryOnReject: true,
   }
 )
-  .then(({ schema, contextBuilder, cache, allowedMutations }) => {
+  .then(({ schema, meshContext, cache, allowedMutations }) => {
     console.log('GraphQL Mesh Schema has been successfully built');
 
     const extensions = (
@@ -42,12 +42,12 @@ retry(
       getUserRights,
       graphqlHTTP(async (req, res) => ({
         schema,
-        context: await contextBuilder({
+        context: {
+          ...meshContext,
           req,
           res,
-          cache,
           schema,
-        }),
+        },
         graphiql: true,
         extensions,
         validationRules: [logDBMutationValidation(allowedMutations)],
